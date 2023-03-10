@@ -8,22 +8,6 @@ from discord.ext import commands
 # Needs "manage role" perms
 # ticket-username-communitysupport
 
-class ticketbutton(discord.ui.View):
-
-    @discord.ui.button(label="📨 Create Ticket", style=discord.ButtonStyle.blurple)
-    async def gray_button(self, button: discord.ui.Button, interaction: discord.Interaction):
-        await interaction.response.send_modal(Ticketmodal())
-
-
-def ticketmessageembed(bot):
-    embed = discord.Embed(title="**Community Support Tickets**",
-                          description=f"Blah blah, this will have something in it at some point.",
-                          color=discord.Color.blue(),
-                          timestamp=datetime.datetime.now())
-    embed.set_author(name=bot.user.name, icon_url=bot.user.avatar)
-    return embed
-
-
 class Ticketmodal(ui.Modal, title='Community Support Ticket'):
     issue = ui.TextInput(label='Please describe your issue', style=discord.TextStyle.paragraph)
 
@@ -55,6 +39,22 @@ class Ticketmodal(ui.Modal, title='Community Support Ticket'):
                                                         ephemeral=True)
                 await ticketchan.send(
                     content=f"User {interaction.user.mention} created a ticket for reason: {self.issue}")
+
+
+class ticketbutton(discord.ui.View):
+
+    @discord.ui.button(label="📨 Create Ticket", style=discord.ButtonStyle.blurple)
+    async def gray_button(self, button: discord.ui.Button, interaction: discord.Interaction):
+        await interaction.response.send_modal(Ticketmodal())
+
+
+def ticketmessageembed(bot):
+    embed = discord.Embed(title="**Community Support Tickets**",
+                          description=f"Blah blah, this will have something in it at some point.",
+                          color=discord.Color.blue(),
+                          timestamp=datetime.datetime.now())
+    embed.set_author(name=bot.user.name, icon_url=bot.user.avatar)
+    return embed
 
 
 class ticketcmd(commands.Cog):
