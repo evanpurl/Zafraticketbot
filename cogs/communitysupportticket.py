@@ -16,29 +16,23 @@ class Ticketmodal(ui.Modal, title='Community Support Ticket'):
             interaction.guild.default_role: discord.PermissionOverwrite(read_messages=False),
             interaction.user: discord.PermissionOverwrite(read_messages=True),
             interaction.guild.me: discord.PermissionOverwrite(read_messages=True)}
-        existticket = discord.utils.get(interaction.guild.channels,
-                                        name=f"ticket-{interaction.user.name.lower()}-communitysupport")
-        if existticket:
-            await interaction.response.send_message(
-                content=f"You already have an existing ticket you silly goose. {existticket.mention}", ephemeral=True)
-        else:
-            ticketcat = discord.utils.get(interaction.guild.categories, name="Tickets")
-            if ticketcat:
-                ticketchan = await interaction.guild.create_text_channel(
-                    f"ticket-{interaction.user.name}-communitysupport", category=ticketcat,
-                    overwrites=overwrites)
-                await interaction.response.send_message(content=f"Ticket created in {ticketchan.mention}!",
-                                                        ephemeral=True)
-                await ticketchan.send(
-                    content=f"User {interaction.user.mention} created a ticket for reason: {self.issue}")
+        ticketcat = discord.utils.get(interaction.guild.categories, name="Tickets")
+        if ticketcat:
+            ticketchan = await interaction.guild.create_text_channel(
+                f"ticket-{interaction.user.name}-communitysupport", category=ticketcat,
+                overwrites=overwrites)
+            await interaction.response.send_message(content=f"Ticket created in {ticketchan.mention}!",
+                                                    ephemeral=True)
+            await ticketchan.send(
+                content=f"User {interaction.user.mention} created a ticket for reason: {self.issue}")
 
-            else:
-                ticketchan = await interaction.guild.create_text_channel(
-                    f"ticket-{interaction.user.name}-communitysupport", overwrites=overwrites)
-                await interaction.response.send_message(content=f"Ticket created in {ticketchan.mention}!",
-                                                        ephemeral=True)
-                await ticketchan.send(
-                    content=f"User {interaction.user.mention} created a ticket for reason: {self.issue}")
+        else:
+            ticketchan = await interaction.guild.create_text_channel(
+                f"ticket-{interaction.user.name}-communitysupport", overwrites=overwrites)
+            await interaction.response.send_message(content=f"Ticket created in {ticketchan.mention}!",
+                                                    ephemeral=True)
+            await ticketchan.send(
+                content=f"User {interaction.user.mention} created a ticket for reason: {self.issue}")
 
 
 class ticketbutton(discord.ui.View):
@@ -46,7 +40,14 @@ class ticketbutton(discord.ui.View):
     @discord.ui.button(label="📨 Create Ticket", style=discord.ButtonStyle.blurple)
     async def gray_button(self, interaction: discord.Interaction, button: discord.ui.Button):
         try:
-            await interaction.response.send_modal(Ticketmodal())
+            existticket = discord.utils.get(interaction.guild.channels,
+                                            name=f"ticket-{interaction.user.name.lower()}-communitysupport")
+            if existticket:
+                await interaction.response.send_message(
+                    content=f"You already have an existing ticket you silly goose. {existticket.mention}",
+                    ephemeral=True)
+            else:
+                await interaction.response.send_modal(Ticketmodal())
         except Exception as e:
             print(e)
 
