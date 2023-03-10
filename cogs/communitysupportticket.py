@@ -25,7 +25,8 @@ class Ticketmodal(ui.Modal, title='Community Support Ticket'):
             await interaction.response.send_message(content=f"Ticket created in {ticketchan.mention}!",
                                                     ephemeral=True)
             await ticketchan.send(
-                content=f"User {interaction.user.mention} created a ticket for reason: {self.issue}")
+                content=f"User {interaction.user.mention} created a ticket for reason: {self.issue}",
+                view=ticketbuttonpanel())
 
         else:
             ticketchan = await interaction.guild.create_text_channel(
@@ -33,7 +34,8 @@ class Ticketmodal(ui.Modal, title='Community Support Ticket'):
             await interaction.response.send_message(content=f"Ticket created in {ticketchan.mention}!",
                                                     ephemeral=True)
             await ticketchan.send(
-                content=f"User {interaction.user.mention} created a ticket for reason: {self.issue}")
+                content=f"User {interaction.user.mention} created a ticket for reason: {self.issue}",
+                view=ticketbuttonpanel())
 
 
 class ticketbuttonpanel(discord.ui.View):
@@ -41,7 +43,8 @@ class ticketbuttonpanel(discord.ui.View):
     def __init__(self):
         super().__init__(timeout=None)
 
-    @discord.ui.button(label="Close Ticket", style=discord.ButtonStyle.red, custom_id="communitysupport:close")
+    @discord.ui.button(label="Close Ticket", emoji="🗑️", style=discord.ButtonStyle.red,
+                       custom_id="communitysupport:close")
     async def close_button(self, interaction: discord.Interaction, button: discord.ui.Button):
         try:
             transcript = await chat_exporter.export(
@@ -57,7 +60,7 @@ class ticketbuttonpanel(discord.ui.View):
             )
 
             await interaction.response.send_message(file=transcript_file)
-            #await interaction.channel.delete()
+            # await interaction.channel.delete()
         except Exception as e:
             print(e)
 
@@ -67,7 +70,8 @@ class ticketbutton(discord.ui.View):
     def __init__(self):
         super().__init__(timeout=None)
 
-    @discord.ui.button(label="📨 Create Ticket", style=discord.ButtonStyle.blurple, custom_id="communitysupportbutton")
+    @discord.ui.button(label="Create Ticket", emoji="📨", style=discord.ButtonStyle.blurple,
+                       custom_id="communitysupportbutton")
     async def gray_button(self, interaction: discord.Interaction, button: discord.ui.Button):
         try:
             existticket = discord.utils.get(interaction.guild.channels,
@@ -108,3 +112,4 @@ class ticketcmd(commands.Cog):
 async def setup(bot):
     await bot.add_cog(ticketcmd(bot))
     bot.add_view(ticketbutton())
+    bot.add_view(ticketbuttonpanel())
