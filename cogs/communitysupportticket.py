@@ -65,7 +65,10 @@ class ticketcmd(commands.Cog):
     @app_commands.command(name="communitysupportticket", description="Command used by admin to create the community "
                                                                      "support ticket message.")
     async def csticket(self, interaction: discord.Interaction) -> None:
-        await interaction.response.send_message(embed=ticketmessageembed(self.bot), view=ticketbutton())
+        try:
+            await interaction.response.send_message(embed=ticketmessageembed(self.bot), view=ticketbutton())
+        except Exception as e:
+            print(e)
 
 
 async def setup(bot):
