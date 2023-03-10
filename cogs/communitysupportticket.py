@@ -18,8 +18,8 @@ def ticketembed(bot):
     return embed
 
 class Ticketmodal(ui.Modal, title='Community Support Ticket'):
-    ingamename = ui.TextInput(label='What is your ingame name?', style=discord.TextStyle.short)
-    server = ui.TextInput(label='What server are you having issues on?', style=discord.TextStyle.short)
+    ingamename = ui.TextInput(label='What is your ingame name?', style=discord.TextStyle.short, max_length=100)
+    server = ui.TextInput(label='What server are you having issues on?', style=discord.TextStyle.short, max_length=100)
     issue = ui.TextInput(label='Please describe your issue:', style=discord.TextStyle.paragraph, max_length=1500)
 
     async def on_submit(self, interaction: discord.Interaction):
