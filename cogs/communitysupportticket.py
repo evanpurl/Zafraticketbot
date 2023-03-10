@@ -37,7 +37,10 @@ class Ticketmodal(ui.Modal, title='Community Support Ticket'):
 
 class ticketbutton(discord.ui.View):
 
-    @discord.ui.button(label="📨 Create Ticket", style=discord.ButtonStyle.blurple)
+    def __init__(self):
+        super().__init__(timeout=None)
+
+    @discord.ui.button(label="📨 Create Ticket", style=discord.ButtonStyle.blurple, custom_id="communitysupportbutton")
     async def gray_button(self, interaction: discord.Interaction, button: discord.ui.Button):
         try:
             existticket = discord.utils.get(interaction.guild.channels,
@@ -77,3 +80,4 @@ class ticketcmd(commands.Cog):
 
 async def setup(bot):
     await bot.add_cog(ticketcmd(bot))
+    await bot.add_view(ticketbutton())
