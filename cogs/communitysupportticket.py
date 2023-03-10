@@ -49,7 +49,6 @@ class ticketbuttonpanel(discord.ui.View):
         try:
             transcript = await chat_exporter.export(
                 interaction.channel,
-                bot=self.bot,
             )
             if transcript is None:
                 return
