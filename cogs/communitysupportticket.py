@@ -80,4 +80,4 @@ class ticketcmd(commands.Cog):
 
 async def setup(bot):
     await bot.add_cog(ticketcmd(bot))
-    await bot.add_view(ticketbutton())
+    bot.add_view(ticketbutton())
