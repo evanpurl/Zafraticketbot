@@ -1,4 +1,7 @@
 import asyncio
+
+import discord
+from discord import app_commands
 from discord.ext import commands
 import os
 
@@ -8,18 +11,21 @@ class setpfp(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(name="setpfp", description="Command to set profile picture of bot.")
+    @app_commands.command(name="setpfp", description="Command to set profile picture of bot.")
     @commands.has_permissions(manage_roles=True)
-    async def setpfp(self, ctx) -> None:
+    async def setpfp(self, interaction: discord.Interaction, pfp: discord.Attachment) -> None:
+        fnames = (".png", ".jpg")
         try:
-            if ctx.message.attachments:
-                for attachment in ctx.message.attachments:
-                    await attachment.save("pfps/"+attachment.filename)
-                    await asyncio.sleep(5) # Lets the picture be saved before changing pfp
-                    with open("pfps/"+attachment.filename, 'rb') as image:
-                        await self.bot.user.edit(avatar=image.read())
-                        await ctx.send("Profile picture updated!")
-                    os.remove("pfps/" + attachment.filename)
+            if pfp.filename.endswith(fnames):
+                await pfp.save("pfps/" + pfp.filename)
+                await interaction.response.defer(ephemeral=True)
+                await asyncio.sleep(5)  # Lets the picture be saved before changing pfp
+                with open("pfps/" + pfp.filename, 'rb') as image:
+                    await self.bot.user.edit(avatar=image.read())
+                    await interaction.followup.send(content="Profile picture updated!", ephemeral=True)
+                os.remove("pfps/" + pfp.filename)
+            else:
+                await interaction.response.send_message(content="Cannot process unknown file.", ephemeral=True)
         except Exception as e:
             print(e)
 
