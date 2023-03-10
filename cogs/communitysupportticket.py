@@ -44,8 +44,11 @@ class Ticketmodal(ui.Modal, title='Community Support Ticket'):
 class ticketbutton(discord.ui.View):
 
     @discord.ui.button(label="📨 Create Ticket", style=discord.ButtonStyle.blurple)
-    async def gray_button(self, button: discord.ui.Button, interaction: discord.Interaction):
-        await interaction.response.send_modal(Ticketmodal())
+    async def gray_button(self, interaction: discord.Interaction, button: discord.ui.Button):
+        try:
+            await interaction.response.send_modal(Ticketmodal())
+        except Exception as e:
+            print(e)
 
 
 def ticketmessageembed(bot):
