@@ -1,3 +1,4 @@
+import asyncio
 import datetime
 import io
 import chat_exporter
@@ -10,6 +11,8 @@ from discord.ext import commands
 # ticket-username-communitysupport
 
 class Ticketmodal(ui.Modal, title='Community Support Ticket'):
+    ingamename = ui.TextInput(label='What is your ingame name?', style=discord.TextStyle.short)
+    server = ui.TextInput(label='What server are you having issues on?', style=discord.TextStyle.short)
     issue = ui.TextInput(label='Please describe your issue:', style=discord.TextStyle.paragraph, max_length=1500)
 
     async def on_submit(self, interaction: discord.Interaction):
@@ -25,7 +28,9 @@ class Ticketmodal(ui.Modal, title='Community Support Ticket'):
             await interaction.response.send_message(content=f"Ticket created in {ticketchan.mention}!",
                                                     ephemeral=True)
             await ticketchan.send(
-                content=f"User {interaction.user.mention} created a ticket for reason: {self.issue}",
+                content=f"{interaction.user.mention} created a ticket: \n \n `Ingame Name: {self.ingamename} \n \n Server: {self.server} \n \n Issue: \n {self.issue}`\n\n\n\n")
+            await ticketchan.send(
+                content=f"When you are finished, click the close ticket button below. This ticket will close in x minutes if no message is sent.",
                 view=ticketbuttonpanel())
 
         else:
@@ -34,7 +39,9 @@ class Ticketmodal(ui.Modal, title='Community Support Ticket'):
             await interaction.response.send_message(content=f"Ticket created in {ticketchan.mention}!",
                                                     ephemeral=True)
             await ticketchan.send(
-                content=f"User {interaction.user.mention} created a ticket for reason: {self.issue}",
+                content=f"{interaction.user.mention} created a ticket: \n \n `Ingame Name: {self.ingamename} \n \n Server: {self.server} \n \n Issue: \n {self.issue}`\n\n\n\n")
+            await ticketchan.send(
+                content=f"When you are finished, click the close ticket button below. This ticket will close in x minutes if no message is sent.",
                 view=ticketbuttonpanel())
 
 
@@ -47,6 +54,7 @@ class ticketbuttonpanel(discord.ui.View):
                        custom_id="communitysupport:close")
     async def close_button(self, interaction: discord.Interaction, button: discord.ui.Button):
         try:
+            # Get log channel here, if channel exists, send transcript there, if not, don't.
             transcript = await chat_exporter.export(
                 interaction.channel,
             )
@@ -60,6 +68,36 @@ class ticketbuttonpanel(discord.ui.View):
 
             await interaction.response.send_message(file=transcript_file)
             # await interaction.channel.delete()
+        except Exception as e:
+            print(e)
+
+    @discord.ui.button(label="Auto-Close Ticket", emoji="⏲️", style=discord.ButtonStyle.gray,
+                       custom_id="communitysupport:autoclose")
+    async def auto_close_button(self, interaction: discord.Interaction, button: discord.ui.Button):
+        try:
+            def check(m: discord.Message):  # m = discord.Message.
+                return m.author.id == interaction.user.id and m.channel.id == interaction.channel.id
+                # Get log channel here, if channel exists, send transcript there, if not, don't.
+
+            try:
+                #              event = on_message without on_
+                while True:
+                    msg = await interaction.client.wait_for('message', check=check, timeout=300)
+            except asyncio.TimeoutError:
+                # at this point, the check didn't become True, let's handle it.
+                transcript = await chat_exporter.export(
+                    interaction.channel,
+                )
+                if transcript is None:
+                    return
+
+                transcript_file = discord.File(
+                    io.BytesIO(transcript.encode()),
+                    filename=f"transcript-{interaction.channel.name}.html",
+                )
+                await interaction.response.send_message(file=transcript_file)
+                # await interaction.channel.delete()
+                return
         except Exception as e:
             print(e)
 
