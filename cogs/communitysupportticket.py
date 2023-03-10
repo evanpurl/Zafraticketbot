@@ -84,6 +84,7 @@ class ticketbuttonpanel(discord.ui.View):
             try:
                 #              event = on_message without on_
                 while True:
+                    print("Message sent.")
                     msg = await interaction.client.wait_for('message', check=check, timeout=300)
             except asyncio.TimeoutError:
                 # at this point, the check didn't become True, let's handle it.
