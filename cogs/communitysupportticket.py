@@ -28,7 +28,7 @@ class Ticketmodal(ui.Modal, title='Community Support Ticket'):
             await interaction.response.send_message(content=f"Ticket created in {ticketchan.mention}!",
                                                     ephemeral=True)
             await ticketchan.send(
-                content=f"{interaction.user.mention} created a ticket: \n \n `Ingame Name: {self.ingamename} \n \n Server: {self.server} \n \n Issue: \n {self.issue}`\n\n\n\n")
+                content=f"{interaction.user.mention} created a ticket: \n \n `Ingame Name: {self.ingamename}\nServer: {self.server}\nIssue: \n {self.issue}`")
             await ticketchan.send(
                 content=f"When you are finished, click the close ticket button below. This ticket will close in x minutes if no message is sent.",
                 view=ticketbuttonpanel())
@@ -39,7 +39,7 @@ class Ticketmodal(ui.Modal, title='Community Support Ticket'):
             await interaction.response.send_message(content=f"Ticket created in {ticketchan.mention}!",
                                                     ephemeral=True)
             await ticketchan.send(
-                content=f"{interaction.user.mention} created a ticket: \n \n `Ingame Name: {self.ingamename} \n \n Server: {self.server} \n \n Issue: \n {self.issue}`\n\n\n\n")
+                content=f"{interaction.user.mention} created a ticket: \n \n `Ingame Name: {self.ingamename}\nServer: {self.server}\nIssue: \n {self.issue}`")
             await ticketchan.send(
                 content=f"When you are finished, click the close ticket button below. This ticket will close in x minutes if no message is sent.",
                 view=ticketbuttonpanel())
