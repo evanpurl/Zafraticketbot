@@ -75,6 +75,8 @@ class ticketbuttonpanel(discord.ui.View):
                        custom_id="communitysupport:autoclose")
     async def auto_close_button(self, interaction: discord.Interaction, button: discord.ui.Button):
         try:
+            await interaction.response.send_message(content="Timer started.", ephemeral=True)
+
             def check(m: discord.Message):  # m = discord.Message.
                 return m.author.id == interaction.user.id and m.channel.id == interaction.channel.id
                 # Get log channel here, if channel exists, send transcript there, if not, don't.
@@ -95,7 +97,7 @@ class ticketbuttonpanel(discord.ui.View):
                     io.BytesIO(transcript.encode()),
                     filename=f"transcript-{interaction.channel.name}.html",
                 )
-                await interaction.response.send_message(file=transcript_file)
+                await interaction.followup.send(file=transcript_file)
                 # await interaction.channel.delete()
                 return
         except Exception as e:
