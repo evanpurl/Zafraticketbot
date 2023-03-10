@@ -17,6 +17,7 @@ def ticketembed(bot):
     embed.set_author(name=bot.user.name, icon_url=bot.user.avatar)
     return embed
 
+
 class Ticketmodal(ui.Modal, title='Community Support Ticket'):
     ingamename = ui.TextInput(label='What is your ingame name?', style=discord.TextStyle.short, max_length=100)
     server = ui.TextInput(label='What server are you having issues on?', style=discord.TextStyle.short, max_length=100)
@@ -45,8 +46,9 @@ class Ticketmodal(ui.Modal, title='Community Support Ticket'):
 
             try:
                 msg = await interaction.client.wait_for('message', check=check, timeout=300)
-            except asyncio.TimeoutError:
-                await interaction.channel.delete()
+            except Exception as e:
+                print(e)
+                #await interaction.channel.delete()
 
         else:
             ticketchan = await interaction.guild.create_text_channel(
