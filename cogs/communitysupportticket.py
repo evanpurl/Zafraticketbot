@@ -10,6 +10,13 @@ from discord.ext import commands
 # Needs "manage role" perms
 # ticket-username-communitysupport
 
+def ticketembed(bot):
+    embed = discord.Embed(description=f"When you are finished, click the close ticket button below. This ticket will "
+                                      f"close in x minutes if no message is sent.", color=discord.Color.blue(),
+                          timestamp=datetime.datetime.now())
+    embed.set_author(name=bot.user.name, icon_url=bot.user.avatar)
+    return embed
+
 class Ticketmodal(ui.Modal, title='Community Support Ticket'):
     ingamename = ui.TextInput(label='What is your ingame name?', style=discord.TextStyle.short)
     server = ui.TextInput(label='What server are you having issues on?', style=discord.TextStyle.short)
@@ -30,8 +37,16 @@ class Ticketmodal(ui.Modal, title='Community Support Ticket'):
             await ticketchan.send(
                 content=f"{interaction.user.mention} created a ticket: \n \n `Ingame Name: {self.ingamename}\nServer: {self.server}\nIssue: \n {self.issue}`")
             await ticketchan.send(
-                content=f"When you are finished, click the close ticket button below. This ticket will close in x minutes if no message is sent.",
+                embed=ticketembed(interaction.client),
                 view=ticketbuttonpanel())
+
+            def check(m: discord.Message):  # m = discord.Message.
+                return m.author.id == interaction.user.id and m.channel.id == interaction.channel.id
+
+            try:
+                msg = await interaction.client.wait_for('message', check=check, timeout=300)
+            except asyncio.TimeoutError:
+                await interaction.channel.delete()
 
         else:
             ticketchan = await interaction.guild.create_text_channel(
@@ -41,8 +56,16 @@ class Ticketmodal(ui.Modal, title='Community Support Ticket'):
             await ticketchan.send(
                 content=f"{interaction.user.mention} created a ticket: \n \n `Ingame Name: {self.ingamename}\nServer: {self.server}\nIssue: \n {self.issue}`")
             await ticketchan.send(
-                content=f"When you are finished, click the close ticket button below. This ticket will close in x minutes if no message is sent.",
+                embed=ticketembed(interaction.client),
                 view=ticketbuttonpanel())
+
+            def check(m: discord.Message):  # m = discord.Message.
+                return m.author.id == interaction.user.id and m.channel.id == interaction.channel.id
+
+            try:
+                msg = await interaction.client.wait_for('message', check=check, timeout=300)
+            except asyncio.TimeoutError:
+                await interaction.channel.delete()
 
 
 class ticketbuttonpanel(discord.ui.View):
@@ -82,9 +105,7 @@ class ticketbuttonpanel(discord.ui.View):
                 # Get log channel here, if channel exists, send transcript there, if not, don't.
 
             try:
-                #              event = on_message without on_
                 while True:
-                    print("Message sent.")
                     msg = await interaction.client.wait_for('message', check=check, timeout=300)
             except asyncio.TimeoutError:
                 # at this point, the check didn't become True, let's handle it.
