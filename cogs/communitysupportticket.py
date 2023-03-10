@@ -9,7 +9,7 @@ from discord.ext import commands
 # ticket-username-communitysupport
 
 class Ticketmodal(ui.Modal, title='Community Support Ticket'):
-    issue = ui.TextInput(label='Please describe your issue', style=discord.TextStyle.paragraph)
+    issue = ui.TextInput(label='Please describe your issue:', style=discord.TextStyle.paragraph, max_length=1500)
 
     async def on_submit(self, interaction: discord.Interaction):
         overwrites = {
