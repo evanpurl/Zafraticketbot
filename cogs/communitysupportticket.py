@@ -1,5 +1,6 @@
 import datetime
-
+import io
+import chat_exporter
 import discord
 from discord import app_commands, ui
 from discord.ext import commands
@@ -33,6 +34,32 @@ class Ticketmodal(ui.Modal, title='Community Support Ticket'):
                                                     ephemeral=True)
             await ticketchan.send(
                 content=f"User {interaction.user.mention} created a ticket for reason: {self.issue}")
+
+
+class ticketbuttonpanel(discord.ui.View):
+
+    def __init__(self):
+        super().__init__(timeout=None)
+
+    @discord.ui.button(label="Close Ticket", style=discord.ButtonStyle.red, custom_id="communitysupport:close")
+    async def close_button(self, interaction: discord.Interaction, button: discord.ui.Button):
+        try:
+            transcript = await chat_exporter.export(
+                interaction.channel,
+                bot=self.bot,
+            )
+            if transcript is None:
+                return
+
+            transcript_file = discord.File(
+                io.BytesIO(transcript.encode()),
+                filename=f"transcript-{interaction.channel.name}.html",
+            )
+
+            await interaction.response.send_message(file=transcript_file)
+            #await interaction.channel.delete()
+        except Exception as e:
+            print(e)
 
 
 class ticketbutton(discord.ui.View):
