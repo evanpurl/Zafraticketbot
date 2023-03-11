@@ -114,7 +114,7 @@ class ticketbuttonpanel(discord.ui.View):
                        custom_id="communitysupport:close")
     async def close_button(self, interaction: discord.Interaction, button: discord.ui.Button):
         results = await startupgetlogchannels()
-        dict((y, x) for x, y in results)
+        print(dict((y, x) for x, y in results))
 
         try:
             lchanid = await dbgetlogchannel("Community Support")
