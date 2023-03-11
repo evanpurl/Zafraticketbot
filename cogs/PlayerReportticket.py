@@ -22,9 +22,9 @@ def ticketembed(bot):
 
 
 class Ticketmodal(ui.Modal, title='Player Report Ticket'):
-    ingamename = ui.TextInput(label="Ingame name of person you're reporting:", style=discord.TextStyle.short, max_length=100)
+    ingamename = ui.TextInput(label="In-game name of person you're reporting:", style=discord.TextStyle.short, max_length=100)
     s64id = ui.TextInput(label='Steam64 ID of the person you are reporting:', style=discord.TextStyle.short, max_length=100)
-    reason = ui.TextInput(label='Reason for reporting this person?', style=discord.TextStyle.short, max_length=150)
+    reason = ui.TextInput(label='Reason for reporting this person?', style=discord.TextStyle.paragraph, max_length=500)
 
     async def on_submit(self, interaction: discord.Interaction):
         overwrites = {
@@ -39,7 +39,7 @@ class Ticketmodal(ui.Modal, title='Player Report Ticket'):
             await interaction.response.send_message(content=f"Ticket created in {ticketchan.mention}!",
                                                     ephemeral=True)
             await ticketchan.send(
-                content=f"{interaction.user.mention} created a Player Report:\n\n`Ingame Name: {self.ingamename}\nSteam64: {self.s64id}\nReason: {self.reason}`")
+                content=f"{interaction.user.mention} created a Player Report:\n\n`Person who was reported: {self.ingamename}\nTheir Steam64 ID: {self.s64id}\nReason for reporting: {self.reason}`")
             await ticketchan.send(
                 embed=ticketembed(interaction.client),
                 view=ticketbuttonpanel())
@@ -75,7 +75,7 @@ class Ticketmodal(ui.Modal, title='Player Report Ticket'):
             await interaction.response.send_message(content=f"Ticket created in {ticketchan.mention}!",
                                                     ephemeral=True)
             await ticketchan.send(
-                content=f"{interaction.user.mention} created a ticket: \n \n `Ingame Name: {self.ingamename}\nServer: {self.server}\nIssue: \n {self.issue}`")
+                content=f"{interaction.user.mention} created a Player Report:\n\n`Person who was reported: {self.ingamename}\nTheir Steam64 ID: {self.s64id}\nReason for reporting: {self.reason}`")
             await ticketchan.send(
                 embed=ticketembed(interaction.client),
                 view=ticketbuttonpanel())

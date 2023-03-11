@@ -75,7 +75,7 @@ class Ticketmodal(ui.Modal, title='Ban Appeal'):
             await interaction.response.send_message(content=f"Ticket created in {ticketchan.mention}!",
                                                     ephemeral=True)
             await ticketchan.send(
-                content=f"{interaction.user.mention} created a ticket: \n \n `Ingame Name: {self.ingamename}\nServer: {self.server}\nIssue: \n {self.issue}`")
+                content=f"{interaction.user.mention} created a Ban Appeal:\n\n`Steam 64 ID: {self.steam64}\nBan Reason: {self.banreason}\nWhy they should be unbanned: {self.whyunban}`")
             await ticketchan.send(
                 embed=ticketembed(interaction.client),
                 view=ticketbuttonpanel())
