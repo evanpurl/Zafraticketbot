@@ -22,9 +22,9 @@ def ticketembed(bot):
 
 
 class Ticketmodal(ui.Modal, title='Player Report Ticket'):
-    ingamename = ui.TextInput(label='What is the in-game name of the person you are reporting?', style=discord.TextStyle.short, max_length=100)
-    s64id = ui.TextInput(label='What is thr Steam64 ID of the person you are reporting?', style=discord.TextStyle.short, max_length=100)
-    reason = ui.TextInput(label='What is the reason you are reporting this person?', style=discord.TextStyle.short, max_length=150)
+    ingamename = ui.TextInput(label="Ingame name of person you're reporting:", style=discord.TextStyle.short, max_length=100)
+    s64id = ui.TextInput(label='Steam64 ID of the person you are reporting:', style=discord.TextStyle.short, max_length=100)
+    reason = ui.TextInput(label='Reason for reporting this person?', style=discord.TextStyle.short, max_length=150)
 
     async def on_submit(self, interaction: discord.Interaction):
         overwrites = {
