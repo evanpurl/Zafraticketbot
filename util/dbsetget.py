@@ -3,15 +3,15 @@ from mysql.connector import MySQLConnection, Error
 from database.python_mysql_dbconfig import read_db_config
 
 
-async def dbget(serverid, bot, valuetoget):
+async def dbgetlogchannel(categoryname):
     try:
         db_config = read_db_config()
         conn = MySQLConnection(**db_config)
         if conn.is_connected():
             c = conn.cursor()
-            sql = f"SELECT {valuetoget} from {bot} where serverid=%(serverid)s;"
+            sql = f"SELECT channelid from categories where categoryname=%(categoryname)s;"
             user_data = {
-                'serverid': serverid,
+                'categoryname': categoryname,
             }
             c.execute(sql, user_data)
             response = c.fetchone()
@@ -27,17 +27,17 @@ async def dbget(serverid, bot, valuetoget):
         return e
 
 
-async def dbset(serverid, bot, valuetoset, value):
+async def dbsetlogchannel(categoryname, value):
     try:
         db_config = read_db_config()
         conn = MySQLConnection(**db_config)
         if conn.is_connected():
             c = conn.cursor()
 
-            sql = f"UPDATE {bot} SET {valuetoset} = {value} where serverid=%(serverid)s;"
+            sql = f"UPDATE categories SET channelid = {value} where categoryname=%(categoryname)s;"
             user_data = {
                 'value': value,
-                'serverid': serverid,
+                'categoryname': categoryname,
             }
             c.execute(sql, user_data)
             conn.commit()

@@ -5,7 +5,9 @@ import chat_exporter
 import discord
 from discord import app_commands, ui
 from discord.ext import commands
+from util.dbsetget import dbgetlogchannel
 
+timeout = 300  # seconds
 
 # Needs "manage role" perms
 # ticket-username-communitysupport
@@ -16,6 +18,7 @@ def ticketembed(bot):
                           timestamp=datetime.datetime.now())
     embed.set_author(name=bot.user.name, icon_url=bot.user.avatar)
     return embed
+
 
 class Ticketmodal(ui.Modal, title='Community Support Ticket'):
     ingamename = ui.TextInput(label='What is your ingame name?', style=discord.TextStyle.short, max_length=100)
@@ -44,9 +47,25 @@ class Ticketmodal(ui.Modal, title='Community Support Ticket'):
                 return m.author.id == interaction.user.id and m.channel.id == interaction.channel.id
 
             try:
-                msg = await interaction.client.wait_for('message', check=check, timeout=300)
+                msg = await interaction.client.wait_for('message', check=check, timeout=timeout)
             except asyncio.TimeoutError:
-                # Generate transcript and send to log channel if set.
+                lchanid = await dbgetlogchannel("Community Support")
+                logchannel = discord.utils.get(interaction.guild.channels,
+                                               id=lchanid)
+                if logchannel:
+                    transcript = await chat_exporter.export(
+                        ticketchan,
+                    )
+                    if transcript is None:
+                        return
+
+                    transcript_file = discord.File(
+                        io.BytesIO(transcript.encode()),
+                        filename=f"transcript-{ticketchan.name}.html",
+                    )
+
+                    await logchannel.send(file=transcript_file)
+
                 await ticketchan.delete()
 
         else:
@@ -64,9 +83,24 @@ class Ticketmodal(ui.Modal, title='Community Support Ticket'):
                 return m.author.id == interaction.user.id and m.channel.id == interaction.channel.id
 
             try:
-                msg = await interaction.client.wait_for('message', check=check, timeout=300)
+                msg = await interaction.client.wait_for('message', check=check, timeout=timeout)
             except asyncio.TimeoutError:
-                # Generate transcript and send to log channel if set.
+                lchanid = await dbgetlogchannel("Community Support")
+                logchannel = discord.utils.get(interaction.guild.channels,
+                                               id=lchanid)
+                if logchannel:
+                    transcript = await chat_exporter.export(
+                        ticketchan,
+                    )
+                    if transcript is None:
+                        return
+
+                    transcript_file = discord.File(
+                        io.BytesIO(transcript.encode()),
+                        filename=f"transcript-{ticketchan.name}.html",
+                    )
+
+                    await logchannel.send(file=transcript_file)
                 await ticketchan.delete()
 
 
@@ -79,19 +113,22 @@ class ticketbuttonpanel(discord.ui.View):
                        custom_id="communitysupport:close")
     async def close_button(self, interaction: discord.Interaction, button: discord.ui.Button):
         try:
-            # Get log channel here, if channel exists, send transcript there, if not, don't.
-            transcript = await chat_exporter.export(
-                interaction.channel,
-            )
-            if transcript is None:
-                return
+            lchanid = await dbgetlogchannel("Community Support")
+            logchannel = discord.utils.get(interaction.guild.channels,
+                                           id=lchanid)
+            if logchannel:
+                transcript = await chat_exporter.export(
+                    interaction.channel,
+                )
+                if transcript is None:
+                    return
 
-            transcript_file = discord.File(
-                io.BytesIO(transcript.encode()),
-                filename=f"transcript-{interaction.channel.name}.html",
-            )
+                transcript_file = discord.File(
+                    io.BytesIO(transcript.encode()),
+                    filename=f"transcript-{interaction.channel.name}.html",
+                )
 
-            await interaction.response.send_message(file=transcript_file)
+                await logchannel.send(file=transcript_file)
             # await interaction.channel.delete()
         except Exception as e:
             print(e)
@@ -108,20 +145,24 @@ class ticketbuttonpanel(discord.ui.View):
 
             try:
                 while True:
-                    msg = await interaction.client.wait_for('message', check=check, timeout=300)
+                    msg = await interaction.client.wait_for('message', check=check, timeout=timeout)
             except asyncio.TimeoutError:
-                # at this point, the check didn't become True, let's handle it.
-                transcript = await chat_exporter.export(
-                    interaction.channel,
-                )
-                if transcript is None:
-                    return
+                lchanid = await dbgetlogchannel("Community Support")
+                logchannel = discord.utils.get(interaction.guild.channels,
+                                               id=lchanid)
+                if logchannel:
+                    transcript = await chat_exporter.export(
+                        interaction.channel,
+                    )
+                    if transcript is None:
+                        return
 
-                transcript_file = discord.File(
-                    io.BytesIO(transcript.encode()),
-                    filename=f"transcript-{interaction.channel.name}.html",
-                )
-                await interaction.followup.send(file=transcript_file)
+                    transcript_file = discord.File(
+                        io.BytesIO(transcript.encode()),
+                        filename=f"transcript-{interaction.channel.name}.html",
+                    )
+
+                    await logchannel.send(file=transcript_file)
                 # await interaction.channel.delete()
                 return
         except Exception as e:
