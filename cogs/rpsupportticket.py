@@ -203,7 +203,7 @@ def ticketmessageembed(bot):
     return embed
 
 
-class ticketcmd(commands.Cog):
+class rpticketcmd(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
@@ -218,6 +218,6 @@ class ticketcmd(commands.Cog):
 
 
 async def setup(bot):
-    await bot.add_cog(ticketcmd(bot))
+    await bot.add_cog(rpticketcmd(bot))
     bot.add_view(ticketbutton())  # line that inits persistent view
     bot.add_view(ticketbuttonpanel())
