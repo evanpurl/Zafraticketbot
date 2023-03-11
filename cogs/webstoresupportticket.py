@@ -28,6 +28,7 @@ class Ticketmodal(ui.Modal, title='Webstore Support Ticket'):
                                max_length=600, required=False)
 
     async def on_submit(self, interaction: discord.Interaction):
+        print(self.suggestions)
         if not self.suggestions:
             self.suggestions = "No Suggestions."
 
