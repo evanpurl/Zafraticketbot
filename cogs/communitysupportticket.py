@@ -139,34 +139,37 @@ class ticketbuttonpanel(discord.ui.View):
                        custom_id="communitysupport:autoclose")
     async def auto_close_button(self, interaction: discord.Interaction, button: discord.ui.Button):
         try:
-            await interaction.response.send_message(content="Timer started.", ephemeral=True)
+            if interaction.user.guild_permissions.manage_channels:
+                await interaction.response.send_message(content="Timer started.", ephemeral=True)
 
-            def check(m: discord.Message):  # m = discord.Message.
-                return m.author.id == interaction.user.id and m.channel.id == interaction.channel.id
-                # Get log channel here, if channel exists, send transcript there, if not, don't.
+                def check(m: discord.Message):  # m = discord.Message.
+                    return m.author.id == interaction.user.id and m.channel.id == interaction.channel.id
+                    # Get log channel here, if channel exists, send transcript there, if not, don't.
 
-            try:
-                while True:
-                    msg = await interaction.client.wait_for('message', check=check, timeout=timeout)
-            except asyncio.TimeoutError:
-                lchanid = await dbgetlogchannel("Community Support")
-                logchannel = discord.utils.get(interaction.guild.channels,
-                                               id=lchanid[0])
-                if logchannel:
-                    transcript = await chat_exporter.export(
-                        interaction.channel,
-                    )
-                    if transcript is None:
-                        return
+                try:
+                    while True:
+                        msg = await interaction.client.wait_for('message', check=check, timeout=timeout)
+                except asyncio.TimeoutError:
+                    lchanid = await dbgetlogchannel("Community Support")
+                    logchannel = discord.utils.get(interaction.guild.channels,
+                                                   id=lchanid[0])
+                    if logchannel:
+                        transcript = await chat_exporter.export(
+                            interaction.channel,
+                        )
+                        if transcript is None:
+                            return
 
-                    transcript_file = discord.File(
-                        io.BytesIO(transcript.encode()),
-                        filename=f"transcript-{interaction.channel.name}.html",
-                    )
+                        transcript_file = discord.File(
+                            io.BytesIO(transcript.encode()),
+                            filename=f"transcript-{interaction.channel.name}.html",
+                        )
 
-                    await logchannel.send(file=transcript_file)
-                await interaction.channel.delete()
-                return
+                        await logchannel.send(file=transcript_file)
+                    await interaction.channel.delete()
+                    return
+            else:
+                await interaction.response.send_message(content="You don't have permission to do that.", ephemeral=True)
         except Exception as e:
             print(e)
 
