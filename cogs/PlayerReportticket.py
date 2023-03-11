@@ -11,7 +11,7 @@ timeout = 300  # seconds
 
 
 # Needs "manage role" perms
-# ticket-username-communitysupport
+# ticket-username-playerreport
 
 def ticketembed(bot):
     embed = discord.Embed(description=f"When you are finished, click the close ticket button below. This ticket will "
@@ -21,10 +21,10 @@ def ticketembed(bot):
     return embed
 
 
-class Ticketmodal(ui.Modal, title='Community Support Ticket'):
-    ingamename = ui.TextInput(label='What is your ingame name?', style=discord.TextStyle.short, max_length=100)
-    server = ui.TextInput(label='What server are you having issues on?', style=discord.TextStyle.short, max_length=100)
-    issue = ui.TextInput(label='Please describe your issue:', style=discord.TextStyle.paragraph, max_length=1500)
+class Ticketmodal(ui.Modal, title='Player Report Ticket'):
+    ingamename = ui.TextInput(label='What is the in-game name of the person you are reporting?', style=discord.TextStyle.short, max_length=100)
+    s64id = ui.TextInput(label='What is thr Steam64 ID of the person you are reporting?', style=discord.TextStyle.short, max_length=100)
+    reason = ui.TextInput(label='What is the reason you are reporting this person?', style=discord.TextStyle.short, max_length=150)
 
     async def on_submit(self, interaction: discord.Interaction):
         overwrites = {
@@ -34,12 +34,12 @@ class Ticketmodal(ui.Modal, title='Community Support Ticket'):
         ticketcat = discord.utils.get(interaction.guild.categories, name="Tickets")
         if ticketcat:
             ticketchan = await interaction.guild.create_text_channel(
-                f"ticket-{interaction.user.name}-communitysupport", category=ticketcat,
+                f"ticket-{interaction.user.name}-playerreport", category=ticketcat,
                 overwrites=overwrites)
             await interaction.response.send_message(content=f"Ticket created in {ticketchan.mention}!",
                                                     ephemeral=True)
             await ticketchan.send(
-                content=f"{interaction.user.mention} created a ticket: \n \n `Ingame Name: {self.ingamename}\nServer: {self.server}\nIssue: {self.issue}`")
+                content=f"{interaction.user.mention} created a Player Report:\n\n`Ingame Name: {self.ingamename}\nSteam64: {self.s64id}\nReason: {self.reason}`")
             await ticketchan.send(
                 embed=ticketembed(interaction.client),
                 view=ticketbuttonpanel())
@@ -50,7 +50,7 @@ class Ticketmodal(ui.Modal, title='Community Support Ticket'):
             try:
                 msg = await interaction.client.wait_for('message', check=check, timeout=timeout)
             except asyncio.TimeoutError:
-                lchanid = await dbgetlogchannel("Community Support")
+                lchanid = await dbgetlogchannel("Player Report")
                 logchannel = discord.utils.get(interaction.guild.channels,
                                                id=lchanid[0])
                 if logchannel:
@@ -71,7 +71,7 @@ class Ticketmodal(ui.Modal, title='Community Support Ticket'):
 
         else:
             ticketchan = await interaction.guild.create_text_channel(
-                f"ticket-{interaction.user.name}-communitysupport", overwrites=overwrites)
+                f"ticket-{interaction.user.name}-playerreport", overwrites=overwrites)
             await interaction.response.send_message(content=f"Ticket created in {ticketchan.mention}!",
                                                     ephemeral=True)
             await ticketchan.send(
@@ -86,7 +86,7 @@ class Ticketmodal(ui.Modal, title='Community Support Ticket'):
             try:
                 msg = await interaction.client.wait_for('message', check=check, timeout=timeout)
             except asyncio.TimeoutError:
-                lchanid = await dbgetlogchannel("Community Support")
+                lchanid = await dbgetlogchannel("Player Report")
                 logchannel = discord.utils.get(interaction.guild.channels,
                                                id=lchanid[0])
                 if logchannel:
@@ -111,10 +111,10 @@ class ticketbuttonpanel(discord.ui.View):
         super().__init__(timeout=None)
 
     @discord.ui.button(label="Close Ticket", emoji="🗑️", style=discord.ButtonStyle.red,
-                       custom_id="communitysupport:close")
+                       custom_id="playerreport:close")
     async def close_button(self, interaction: discord.Interaction, button: discord.ui.Button):
         try:
-            lchanid = await dbgetlogchannel("Community Support")
+            lchanid = await dbgetlogchannel("Player Report")
             logchannel = discord.utils.get(interaction.guild.channels,
                                            id=lchanid[0])
             if logchannel:
@@ -136,7 +136,7 @@ class ticketbuttonpanel(discord.ui.View):
 
     @commands.has_permissions(manage_channels=True)
     @discord.ui.button(label="Auto-Close Ticket", emoji="⏲️", style=discord.ButtonStyle.gray,
-                       custom_id="communitysupport:autoclose")
+                       custom_id="playerreport:autoclose")
     async def auto_close_button(self, interaction: discord.Interaction, button: discord.ui.Button):
         try:
             if interaction.user.guild_permissions.manage_channels:
@@ -149,7 +149,7 @@ class ticketbuttonpanel(discord.ui.View):
                     while True:
                         msg = await interaction.client.wait_for('message', check=check, timeout=timeout)
                 except asyncio.TimeoutError:
-                    lchanid = await dbgetlogchannel("Community Support")
+                    lchanid = await dbgetlogchannel("Player Report")
                     logchannel = discord.utils.get(interaction.guild.channels,
                                                    id=lchanid[0])
                     if logchannel:
@@ -179,11 +179,11 @@ class ticketbutton(discord.ui.View):
         super().__init__(timeout=None)
 
     @discord.ui.button(label="Create Ticket", emoji="📨", style=discord.ButtonStyle.blurple,
-                       custom_id="communitysupportbutton")
+                       custom_id="playerreportbutton")
     async def gray_button(self, interaction: discord.Interaction, button: discord.ui.Button):
         try:
             existticket = discord.utils.get(interaction.guild.channels,
-                                            name=f"ticket-{interaction.user.name.lower()}-communitysupport")
+                                            name=f"ticket-{interaction.user.name.lower()}-playerreport")
             if existticket:
                 await interaction.response.send_message(
                     content=f"You already have an existing ticket you silly goose. {existticket.mention}",
@@ -195,7 +195,7 @@ class ticketbutton(discord.ui.View):
 
 
 def ticketmessageembed(bot):
-    embed = discord.Embed(title="**Community Support Tickets**",
+    embed = discord.Embed(title="**Player Report Tickets**",
                           description=f"Blah blah, this will have something in it at some point.",
                           color=discord.Color.blue(),
                           timestamp=datetime.datetime.now())
@@ -208,8 +208,8 @@ class ticketcmd(commands.Cog):
         self.bot = bot
 
     @commands.has_permissions(manage_roles=True)
-    @app_commands.command(name="community-support-ticket", description="Command used by admin to create the Community "
-                                                                     "Support ticket message.")
+    @app_commands.command(name="player-report-ticket", description="Command used by admin to create the "
+                                                                          "Player Report ticket message.")
     async def csticket(self, interaction: discord.Interaction) -> None:
         try:
             await interaction.response.send_message(embed=ticketmessageembed(self.bot), view=ticketbutton())

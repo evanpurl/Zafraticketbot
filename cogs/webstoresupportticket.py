@@ -11,7 +11,7 @@ timeout = 300  # seconds
 
 
 # Needs "manage role" perms
-# ticket-username-communitysupport
+# ticket-username-webstoresupport
 
 def ticketembed(bot):
     embed = discord.Embed(description=f"When you are finished, click the close ticket button below. This ticket will "
@@ -21,12 +21,16 @@ def ticketembed(bot):
     return embed
 
 
-class Ticketmodal(ui.Modal, title='Community Support Ticket'):
-    ingamename = ui.TextInput(label='What is your ingame name?', style=discord.TextStyle.short, max_length=100)
-    server = ui.TextInput(label='What server are you having issues on?', style=discord.TextStyle.short, max_length=100)
-    issue = ui.TextInput(label='Please describe your issue:', style=discord.TextStyle.paragraph, max_length=1500)
+class Ticketmodal(ui.Modal, title='Webstore Support Ticket'):
+    issue = ui.TextInput(label='What issues are you having with the Webstore?', style=discord.TextStyle.paragraph,
+                         max_length=600)
+    suggestions = ui.TextInput(label='Do you have any suggestions for the Webstore?', style=discord.TextStyle.paragraph,
+                               max_length=600, required=False)
 
     async def on_submit(self, interaction: discord.Interaction):
+        if not self.suggestions:
+            self.suggestions = "No Suggestions."
+
         overwrites = {
             interaction.guild.default_role: discord.PermissionOverwrite(read_messages=False),
             interaction.user: discord.PermissionOverwrite(read_messages=True),
@@ -34,12 +38,12 @@ class Ticketmodal(ui.Modal, title='Community Support Ticket'):
         ticketcat = discord.utils.get(interaction.guild.categories, name="Tickets")
         if ticketcat:
             ticketchan = await interaction.guild.create_text_channel(
-                f"ticket-{interaction.user.name}-communitysupport", category=ticketcat,
+                f"ticket-{interaction.user.name}-webstoresupport", category=ticketcat,
                 overwrites=overwrites)
             await interaction.response.send_message(content=f"Ticket created in {ticketchan.mention}!",
                                                     ephemeral=True)
             await ticketchan.send(
-                content=f"{interaction.user.mention} created a ticket: \n \n `Ingame Name: {self.ingamename}\nServer: {self.server}\nIssue: {self.issue}`")
+                content=f"{interaction.user.mention} created a ticket:\n\n`Webstore issue: {self.issue}\nSuggestions: {self.suggestions}`")
             await ticketchan.send(
                 embed=ticketembed(interaction.client),
                 view=ticketbuttonpanel())
@@ -50,7 +54,7 @@ class Ticketmodal(ui.Modal, title='Community Support Ticket'):
             try:
                 msg = await interaction.client.wait_for('message', check=check, timeout=timeout)
             except asyncio.TimeoutError:
-                lchanid = await dbgetlogchannel("Community Support")
+                lchanid = await dbgetlogchannel("Webstore Support")
                 logchannel = discord.utils.get(interaction.guild.channels,
                                                id=lchanid[0])
                 if logchannel:
@@ -71,7 +75,7 @@ class Ticketmodal(ui.Modal, title='Community Support Ticket'):
 
         else:
             ticketchan = await interaction.guild.create_text_channel(
-                f"ticket-{interaction.user.name}-communitysupport", overwrites=overwrites)
+                f"ticket-{interaction.user.name}-webstoresupport", overwrites=overwrites)
             await interaction.response.send_message(content=f"Ticket created in {ticketchan.mention}!",
                                                     ephemeral=True)
             await ticketchan.send(
@@ -86,7 +90,7 @@ class Ticketmodal(ui.Modal, title='Community Support Ticket'):
             try:
                 msg = await interaction.client.wait_for('message', check=check, timeout=timeout)
             except asyncio.TimeoutError:
-                lchanid = await dbgetlogchannel("Community Support")
+                lchanid = await dbgetlogchannel("Webstore Support")
                 logchannel = discord.utils.get(interaction.guild.channels,
                                                id=lchanid[0])
                 if logchannel:
@@ -111,10 +115,10 @@ class ticketbuttonpanel(discord.ui.View):
         super().__init__(timeout=None)
 
     @discord.ui.button(label="Close Ticket", emoji="🗑️", style=discord.ButtonStyle.red,
-                       custom_id="communitysupport:close")
+                       custom_id="webstoresupport:close")
     async def close_button(self, interaction: discord.Interaction, button: discord.ui.Button):
         try:
-            lchanid = await dbgetlogchannel("Community Support")
+            lchanid = await dbgetlogchannel("Webstore Support")
             logchannel = discord.utils.get(interaction.guild.channels,
                                            id=lchanid[0])
             if logchannel:
@@ -136,7 +140,7 @@ class ticketbuttonpanel(discord.ui.View):
 
     @commands.has_permissions(manage_channels=True)
     @discord.ui.button(label="Auto-Close Ticket", emoji="⏲️", style=discord.ButtonStyle.gray,
-                       custom_id="communitysupport:autoclose")
+                       custom_id="webstoresupport:autoclose")
     async def auto_close_button(self, interaction: discord.Interaction, button: discord.ui.Button):
         try:
             if interaction.user.guild_permissions.manage_channels:
@@ -149,7 +153,7 @@ class ticketbuttonpanel(discord.ui.View):
                     while True:
                         msg = await interaction.client.wait_for('message', check=check, timeout=timeout)
                 except asyncio.TimeoutError:
-                    lchanid = await dbgetlogchannel("Community Support")
+                    lchanid = await dbgetlogchannel("Webstore Support")
                     logchannel = discord.utils.get(interaction.guild.channels,
                                                    id=lchanid[0])
                     if logchannel:
@@ -179,11 +183,11 @@ class ticketbutton(discord.ui.View):
         super().__init__(timeout=None)
 
     @discord.ui.button(label="Create Ticket", emoji="📨", style=discord.ButtonStyle.blurple,
-                       custom_id="communitysupportbutton")
+                       custom_id="webstoresupportbutton")
     async def gray_button(self, interaction: discord.Interaction, button: discord.ui.Button):
         try:
             existticket = discord.utils.get(interaction.guild.channels,
-                                            name=f"ticket-{interaction.user.name.lower()}-communitysupport")
+                                            name=f"ticket-{interaction.user.name.lower()}-webstoresupport")
             if existticket:
                 await interaction.response.send_message(
                     content=f"You already have an existing ticket you silly goose. {existticket.mention}",
@@ -195,7 +199,7 @@ class ticketbutton(discord.ui.View):
 
 
 def ticketmessageembed(bot):
-    embed = discord.Embed(title="**Community Support Tickets**",
+    embed = discord.Embed(title="**Webstore Support Tickets**",
                           description=f"Blah blah, this will have something in it at some point.",
                           color=discord.Color.blue(),
                           timestamp=datetime.datetime.now())
@@ -208,8 +212,8 @@ class ticketcmd(commands.Cog):
         self.bot = bot
 
     @commands.has_permissions(manage_roles=True)
-    @app_commands.command(name="community-support-ticket", description="Command used by admin to create the Community "
-                                                                     "Support ticket message.")
+    @app_commands.command(name="webstore-support-ticket", description="Command used by admin to create the "
+                                                                      "Webstore support ticket message.")
     async def csticket(self, interaction: discord.Interaction) -> None:
         try:
             await interaction.response.send_message(embed=ticketmessageembed(self.bot), view=ticketbutton())
