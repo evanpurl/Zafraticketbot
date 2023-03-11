@@ -28,8 +28,6 @@ class Ticketmodal(ui.Modal, title='Webstore Support Ticket'):
                                max_length=600, required=False)
 
     async def on_submit(self, interaction: discord.Interaction):
-        if self.suggestions == "":
-            self.suggestions = "No Suggestions."
 
         overwrites = {
             interaction.guild.default_role: discord.PermissionOverwrite(read_messages=False),
@@ -43,7 +41,7 @@ class Ticketmodal(ui.Modal, title='Webstore Support Ticket'):
             await interaction.response.send_message(content=f"Ticket created in {ticketchan.mention}!",
                                                     ephemeral=True)
             await ticketchan.send(
-                content=f"{interaction.user.mention} created a ticket:\n\n`Webstore issue: {self.issue}\nSuggestions: {self.suggestions}`")
+                content=f"{interaction.user.mention} created a ticket:\n\n`Webstore issue: {self.issue}\nSuggestions if any: {self.suggestions}`")
             await ticketchan.send(
                 embed=ticketembed(interaction.client),
                 view=ticketbuttonpanel())
@@ -79,7 +77,7 @@ class Ticketmodal(ui.Modal, title='Webstore Support Ticket'):
             await interaction.response.send_message(content=f"Ticket created in {ticketchan.mention}!",
                                                     ephemeral=True)
             await ticketchan.send(
-                content=f"{interaction.user.mention} created a ticket:\n\n`Webstore issue: {self.issue}\nSuggestions: {self.suggestions}`")
+                content=f"{interaction.user.mention} created a ticket:\n\n`Webstore issue: {self.issue}\nSuggestions if any: {self.suggestions}`")
             await ticketchan.send(
                 embed=ticketembed(interaction.client),
                 view=ticketbuttonpanel())
