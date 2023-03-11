@@ -9,6 +9,7 @@ from util.dbsetget import dbgetlogchannel
 
 timeout = 300  # seconds
 
+
 # Needs "manage role" perms
 # ticket-username-communitysupport
 
@@ -129,10 +130,11 @@ class ticketbuttonpanel(discord.ui.View):
                 )
 
                 await logchannel.send(file=transcript_file)
-            # await interaction.channel.delete()
+            await interaction.channel.delete()
         except Exception as e:
             print(e)
 
+    @commands.has_permissions(manage_channels=True)
     @discord.ui.button(label="Auto-Close Ticket", emoji="⏲️", style=discord.ButtonStyle.gray,
                        custom_id="communitysupport:autoclose")
     async def auto_close_button(self, interaction: discord.Interaction, button: discord.ui.Button):
@@ -163,7 +165,7 @@ class ticketbuttonpanel(discord.ui.View):
                     )
 
                     await logchannel.send(file=transcript_file)
-                # await interaction.channel.delete()
+                await interaction.channel.delete()
                 return
         except Exception as e:
             print(e)
