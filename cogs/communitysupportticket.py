@@ -73,7 +73,7 @@ class Ticketmodal(ui.Modal, title='Community Support Ticket'):
             await interaction.response.send_message(content=f"Ticket created in {ticketchan.mention}!",
                                                     ephemeral=True)
             await ticketchan.send(
-                content=f"{interaction.user.mention} created a ticket: \n \n `In-game Name: {self.ingamename}\nServer: {self.server}\nIssue: \n {self.issue}`")
+                content=f"{interaction.user.mention} created a ticket: \n \n ```Reason: {self.issue}```")
             await ticketchan.send(
                 embed=ticketembed(interaction.client),
                 view=ticketbuttonpanel())
