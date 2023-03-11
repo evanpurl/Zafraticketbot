@@ -48,3 +48,24 @@ async def dbsetlogchannel(categoryname, value):
     except Error as e:
         print(e)
         return e
+
+
+async def startupgetlogchannels():
+    try:
+        db_config = read_db_config()
+        conn = MySQLConnection(**db_config)
+        if conn.is_connected():
+            c = conn.cursor()
+            sql = f"SELECT categoryname, channelid from categories;"
+            c.execute(sql)
+            response = c.fetchall()
+            if not response:
+                return None
+            c.close()
+            conn.close()
+            return response
+        else:
+            return 'Connection to database failed.'
+    except Error as e:
+        print(e)
+        return e

@@ -5,7 +5,7 @@ import chat_exporter
 import discord
 from discord import app_commands, ui
 from discord.ext import commands
-from util.dbsetget import dbgetlogchannel
+from util.dbsetget import dbgetlogchannel, startupgetlogchannels
 
 timeout = 300  # seconds
 
@@ -113,6 +113,7 @@ class ticketbuttonpanel(discord.ui.View):
     @discord.ui.button(label="Close Ticket", emoji="🗑️", style=discord.ButtonStyle.red,
                        custom_id="communitysupport:close")
     async def close_button(self, interaction: discord.Interaction, button: discord.ui.Button):
+        print(startupgetlogchannels())
         try:
             lchanid = await dbgetlogchannel("Community Support")
             logchannel = discord.utils.get(interaction.guild.channels,
