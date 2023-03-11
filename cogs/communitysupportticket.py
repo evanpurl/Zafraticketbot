@@ -5,7 +5,7 @@ import chat_exporter
 import discord
 from discord import app_commands, ui
 from discord.ext import commands
-from util.dbsetget import dbgetlogchannel, startupgetlogchannels
+from util.dbsetget import dbgetlogchannel
 
 timeout = 300  # seconds
 
@@ -113,13 +113,10 @@ class ticketbuttonpanel(discord.ui.View):
     @discord.ui.button(label="Close Ticket", emoji="🗑️", style=discord.ButtonStyle.red,
                        custom_id="communitysupport:close")
     async def close_button(self, interaction: discord.Interaction, button: discord.ui.Button):
-        results = await startupgetlogchannels()
-        print(dict((x, y) for x, y in results))
-
         try:
-            #lchanid = await dbgetlogchannel("Community Support")
+            lchanid = await dbgetlogchannel("Community Support")
             logchannel = discord.utils.get(interaction.guild.channels,
-                                           id=None)
+                                           id=lchanid[0])
             if logchannel:
                 transcript = await chat_exporter.export(
                     interaction.channel,
@@ -133,7 +130,7 @@ class ticketbuttonpanel(discord.ui.View):
                 )
 
                 await logchannel.send(file=transcript_file)
-            #await interaction.channel.delete()
+            await interaction.channel.delete()
         except Exception as e:
             print(e)
 
@@ -147,7 +144,6 @@ class ticketbuttonpanel(discord.ui.View):
 
                 def check(m: discord.Message):  # m = discord.Message.
                     return m.author.id == interaction.user.id and m.channel.id == interaction.channel.id
-                    # Get log channel here, if channel exists, send transcript there, if not, don't.
 
                 try:
                     while True:
