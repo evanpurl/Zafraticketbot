@@ -22,9 +22,10 @@ def ticketembed(bot):
 
 
 class Ticketmodal(ui.Modal, title='Semi-Vanilla Support Ticket'):
-    ingamename = ui.TextInput(label='What is your In-game name?', style=discord.TextStyle.short, max_length=100)
-    server = ui.TextInput(label='What server are you having issues on?', style=discord.TextStyle.short, max_length=100)
-    issue = ui.TextInput(label='Please describe your issue:', style=discord.TextStyle.paragraph, max_length=1500)
+    ingamename = ui.TextInput(label='WHAT IS YOUR IN-GAME NAME?', style=discord.TextStyle.short, max_length=100,
+                              placeholder="(name)")
+    issue = ui.TextInput(label='PLEASE EXPLAIN WHAT THIS TICKET IS ABOUT:', style=discord.TextStyle.paragraph,
+                         max_length=1500, placeholder="(Issue)")
 
     async def on_submit(self, interaction: discord.Interaction):
         overwrites = {
@@ -39,7 +40,7 @@ class Ticketmodal(ui.Modal, title='Semi-Vanilla Support Ticket'):
             await interaction.response.send_message(content=f"Ticket created in {ticketchan.mention}!",
                                                     ephemeral=True)
             await ticketchan.send(
-                content=f"{interaction.user.mention} created a ticket: \n \n `In-game Name: {self.ingamename}\nServer: {self.server}\nIssue: {self.issue}`")
+                content=f"{interaction.user.mention} created a ticket: \n \n ```In-game Name: {self.ingamename}\nIssue: {self.issue}```")
             await ticketchan.send(
                 embed=ticketembed(interaction.client),
                 view=ticketbuttonpanel())
@@ -75,7 +76,7 @@ class Ticketmodal(ui.Modal, title='Semi-Vanilla Support Ticket'):
             await interaction.response.send_message(content=f"Ticket created in {ticketchan.mention}!",
                                                     ephemeral=True)
             await ticketchan.send(
-                content=f"{interaction.user.mention} created a ticket: \n \n `In-game Name: {self.ingamename}\nServer: {self.server}\nIssue: \n {self.issue}`")
+                content=f"{interaction.user.mention} created a ticket: \n \n ```In-game Name: {self.ingamename}\nIssue: {self.issue}```")
             await ticketchan.send(
                 embed=ticketembed(interaction.client),
                 view=ticketbuttonpanel())

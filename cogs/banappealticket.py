@@ -22,8 +22,8 @@ def ticketembed(bot):
 
 
 class Ticketmodal(ui.Modal, title='Ban Appeal'):
-    steam64 = ui.TextInput(label='What is your Steam64 ID?', style=discord.TextStyle.short, max_length=100)
-    banreason = ui.TextInput(label='For what reason were you banned?', style=discord.TextStyle.paragraph, max_length=500)
+    steam64 = ui.TextInput(label='What is your Steam64 ID?', style=discord.TextStyle.short, max_length=100, placeholder="(name)")
+    banreason = ui.TextInput(label='For what reason were you banned?', style=discord.TextStyle.paragraph, max_length=500, placeholder="(Hacking, Griefing, etc.)")
     whyunban = ui.TextInput(label='Why do you think you should be unbanned?', style=discord.TextStyle.paragraph, max_length=500)
 
     async def on_submit(self, interaction: discord.Interaction):
@@ -39,7 +39,8 @@ class Ticketmodal(ui.Modal, title='Ban Appeal'):
             await interaction.response.send_message(content=f"Ticket created in {ticketchan.mention}!",
                                                     ephemeral=True)
             await ticketchan.send(
-                content=f"{interaction.user.mention} created a Ban Appeal:\n\n`Steam 64 ID: {self.steam64}\nBan Reason: {self.banreason}\nWhy they should be unbanned: {self.whyunban}`")
+                content=f"{interaction.user.mention} created a Ban Appeal:\n\n```Steam 64 ID: {self.steam64}\nBan "
+                        f"Reason: {self.banreason}\nWhy they should be unbanned: {self.whyunban}```")
             await ticketchan.send(
                 embed=ticketembed(interaction.client),
                 view=ticketbuttonpanel())
@@ -75,7 +76,7 @@ class Ticketmodal(ui.Modal, title='Ban Appeal'):
             await interaction.response.send_message(content=f"Ticket created in {ticketchan.mention}!",
                                                     ephemeral=True)
             await ticketchan.send(
-                content=f"{interaction.user.mention} created a Ban Appeal:\n\n`Steam 64 ID: {self.steam64}\nBan Reason: {self.banreason}\nWhy they should be unbanned: {self.whyunban}`")
+                content=f"{interaction.user.mention} created a Ban Appeal:\n\n```Steam 64 ID: {self.steam64}\nBan Reason: {self.banreason}\nWhy they should be unbanned: {self.whyunban}```")
             await ticketchan.send(
                 embed=ticketembed(interaction.client),
                 view=ticketbuttonpanel())
