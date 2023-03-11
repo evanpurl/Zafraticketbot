@@ -113,7 +113,9 @@ class ticketbuttonpanel(discord.ui.View):
     @discord.ui.button(label="Close Ticket", emoji="🗑️", style=discord.ButtonStyle.red,
                        custom_id="communitysupport:close")
     async def close_button(self, interaction: discord.Interaction, button: discord.ui.Button):
-        print(await startupgetlogchannels())
+        results = await startupgetlogchannels()
+        dict((y, x) for x, y in results)
+
         try:
             lchanid = await dbgetlogchannel("Community Support")
             logchannel = discord.utils.get(interaction.guild.channels,
