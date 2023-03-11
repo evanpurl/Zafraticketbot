@@ -131,7 +131,7 @@ class ticketbuttonpanel(discord.ui.View):
                 )
 
                 await logchannel.send(file=transcript_file)
-            await interaction.channel.delete()
+            #await interaction.channel.delete()
         except Exception as e:
             print(e)
 
