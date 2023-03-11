@@ -7,7 +7,7 @@ class bcommands(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(name="reload", description="Command to reload cogs")
+    @commands.command(name="sync", description="Command to sync slash commands")
     async def reload(self, ctx) -> None:
         tagged = ctx.message.mentions
         if tagged[0].id == self.bot.user.id:
