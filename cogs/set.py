@@ -10,7 +10,7 @@ class setcmd(commands.GroupCog, name="set"):
     def __init__(self, bot):
         self.bot = bot
 
-    @app_commands.command(name="community support log",
+    @app_commands.command(name="community-support-log",
                           description="Admin command to set Community Support log channel.")
     @app_commands.checks.has_permissions(manage_channels=True)
     async def csupportlog(self, interaction: discord.Interaction, channel: discord.TextChannel):
