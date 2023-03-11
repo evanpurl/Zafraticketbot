@@ -51,7 +51,7 @@ class Ticketmodal(ui.Modal, title='Community Support Ticket'):
             except asyncio.TimeoutError:
                 lchanid = await dbgetlogchannel("Community Support")
                 logchannel = discord.utils.get(interaction.guild.channels,
-                                               id=lchanid)
+                                               id=lchanid[0])
                 if logchannel:
                     transcript = await chat_exporter.export(
                         ticketchan,
@@ -87,7 +87,7 @@ class Ticketmodal(ui.Modal, title='Community Support Ticket'):
             except asyncio.TimeoutError:
                 lchanid = await dbgetlogchannel("Community Support")
                 logchannel = discord.utils.get(interaction.guild.channels,
-                                               id=lchanid)
+                                               id=lchanid[0])
                 if logchannel:
                     transcript = await chat_exporter.export(
                         ticketchan,
@@ -115,7 +115,7 @@ class ticketbuttonpanel(discord.ui.View):
         try:
             lchanid = await dbgetlogchannel("Community Support")
             logchannel = discord.utils.get(interaction.guild.channels,
-                                           id=lchanid)
+                                           id=lchanid[0])
             if logchannel:
                 transcript = await chat_exporter.export(
                     interaction.channel,
@@ -149,7 +149,7 @@ class ticketbuttonpanel(discord.ui.View):
             except asyncio.TimeoutError:
                 lchanid = await dbgetlogchannel("Community Support")
                 logchannel = discord.utils.get(interaction.guild.channels,
-                                               id=lchanid)
+                                               id=lchanid[0])
                 if logchannel:
                     transcript = await chat_exporter.export(
                         interaction.channel,
