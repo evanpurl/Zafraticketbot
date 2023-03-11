@@ -117,9 +117,9 @@ class ticketbuttonpanel(discord.ui.View):
         print(dict((x, y) for x, y in results))
 
         try:
-            lchanid = await dbgetlogchannel("Community Support")
+            #lchanid = await dbgetlogchannel("Community Support")
             logchannel = discord.utils.get(interaction.guild.channels,
-                                           id=lchanid[0])
+                                           id=None)
             if logchannel:
                 transcript = await chat_exporter.export(
                     interaction.channel,
