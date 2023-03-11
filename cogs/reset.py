@@ -17,9 +17,10 @@ class resetcmd(commands.Cog):
         app_commands.Choice(name='Community Support Log', value=1),
         app_commands.Choice(name='RP Support', value=2),
         app_commands.Choice(name='Semi-Vanilla Support', value=3),
-        app_commands.Choice(name='Player Report', value=4),
-        app_commands.Choice(name='Ban Appeal', value=5),
-        app_commands.Choice(name='Webstore Support', value=6),
+        app_commands.Choice(name='Semi-Roleplay Support', value=4),
+        app_commands.Choice(name='Player Report', value=5),
+        app_commands.Choice(name='Ban Appeal', value=6),
+        app_commands.Choice(name='Webstore Support', value=7),
     ])
     async def reset(self, interaction: discord.Interaction, config: app_commands.Choice[int]) -> None:
         if config.value == 1:
@@ -32,12 +33,15 @@ class resetcmd(commands.Cog):
             await dbsetlogchannel("Semi-Vanilla Support", 0)
             await interaction.response.send_message(f"Semi-Vanilla Support Log channel has been reset.", ephemeral=True)
         elif config.value == 4:
+            await dbsetlogchannel("Semi-Roleplay Support", 0)
+            await interaction.response.send_message(f"Semi-Roleplay Support Log channel has been reset.", ephemeral=True)
+        elif config.value == 5:
             await dbsetlogchannel("Player Report", 0)
             await interaction.response.send_message(f"Player Report Log channel has been reset.", ephemeral=True)
-        elif config.value == 5:
+        elif config.value == 6:
             await dbsetlogchannel("Ban Appeal", 0)
             await interaction.response.send_message(f"Ban Appeal Log channel has been reset.", ephemeral=True)
-        elif config.value == 6:
+        elif config.value == 7:
             await dbsetlogchannel("Webstore Support", 0)
             await interaction.response.send_message(f"Webstore Support Log channel has been reset.", ephemeral=True)
 

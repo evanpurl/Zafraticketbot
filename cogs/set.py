@@ -48,6 +48,19 @@ class setcmd(commands.GroupCog, name="set"):
             print(e)
             await interaction.response.send_message(content=f"""Something went wrong.""", ephemeral=True)
 
+    @app_commands.command(name="semi-roleplay-support-log",
+                          description="Admin command to set the Semi-Roleplay log channel.")
+    @app_commands.checks.has_permissions(manage_channels=True)
+    async def semiroleplaysupportlog(self, interaction: discord.Interaction, channel: discord.TextChannel):
+        try:
+            await dbsetlogchannel("Semi-Roleplay Support", channel.id)
+            await interaction.response.send_message(
+                f"Your Semi-Roleplay Support log channel has been set to {channel.mention}.",
+                ephemeral=True)
+        except Exception as e:
+            print(e)
+            await interaction.response.send_message(content=f"""Something went wrong.""", ephemeral=True)
+
     @app_commands.command(name="player-report-log",
                           description="Admin command to set the Player Report log channel.")
     @app_commands.checks.has_permissions(manage_channels=True)
