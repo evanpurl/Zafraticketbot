@@ -39,12 +39,12 @@ class Ticketmodal(ui.Modal, title='Semi-Vanilla Support Ticket'):
             await interaction.response.send_message(content=f"Ticket created in {ticketchan.mention}!",
                                                     ephemeral=True)
             await ticketchan.send(
-                content=f"Welcome {interaction.user.mention}!\n\nWe will do our best to help you out.\nPlease be "
-                        f"patient and wait for a staff member to respond.\n\n```In-game Name:\n{self.ingamename}\n\nIssue:\n{self.issue}```")
+                content=f'Welcome {interaction.user.mention}!\n\nWe will do our best to help you out.\nPlease be '
+                        f'patient and wait for a staff member to respond.\n\n```json\nIn-game Name:\n"{self.ingamename}"\n\nIssue:\n"{self.issue}"```')
             await ticketchan.send(
-                content=f"**Please confirm that the information above is correct.**\n"
-                        f"If you do not respond in 5 minutes, this ticket will automatically close."
-                        f"\n\nIf you have any extra evidence to add, please send it now.",
+                content=f'**Please confirm that the information above is correct.**\n'
+                        f'If you do not respond in 5 minutes, this ticket will automatically close.'
+                        f'\n\nIf you have any extra evidence to add, please send it now.',
                 embed=ticketembed(interaction.client), view=ticketbuttonpanel())
 
             def check(m: discord.Message):  # m = discord.Message.
@@ -79,8 +79,8 @@ class Ticketmodal(ui.Modal, title='Semi-Vanilla Support Ticket'):
                                                     ephemeral=True)
 
             await ticketchan.send(
-                content=f"Welcome {interaction.user.mention}!\n\nWe will do our best to help you out.\nPlease be "
-                        f"patient and wait for a staff member to respond.\n\n```In-game Name:\n{self.ingamename}\n\nIssue:\n{self.issue}```")
+                content=f'Welcome {interaction.user.mention}!\n\nWe will do our best to help you out.\nPlease be '
+                        f'patient and wait for a staff member to respond.\n\n```json\nIn-game Name:\n"{self.ingamename}"\n\nIssue:\n"{self.issue}"```')
             await ticketchan.send(
                 content=f"**Please confirm that the information above is correct.**\n"
                         f"If you do not respond in 5 minutes, this ticket will automatically close."
