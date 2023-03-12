@@ -42,11 +42,14 @@ class Ticketmodal(ui.Modal, title='Ban Appeal'):
             await interaction.response.send_message(content=f"Ticket created in {ticketchan.mention}!",
                                                     ephemeral=True)
             await ticketchan.send(
-                content=f"{interaction.user.mention} created a Ban Appeal:\n\n```Steam 64 ID: {self.steam64}\nBan "
-                        f"Reason: {self.banreason}\nWhy they should be unbanned: {self.whyunban}```")
+                content=f"Welcome {interaction.user.mention}!\n\nWe will do our best to help you out.\nPlease be "
+                        f"patient and wait for a staff member to respond.\n\n```Steam 64 ID:\n{self.steam64}\n\nBan "
+                        f"Reason:\n{self.banreason}\n\nWhy they should be unbanned:\n{self.whyunban}```")
             await ticketchan.send(
-                embed=ticketembed(interaction.client),
-                view=ticketbuttonpanel())
+                content=f"**Please confirm that the information above is correct.**\n"
+                        f"If you do not respond in 5 minutes, this ticket will automatically close."
+                        f"\n\nIf you have any extra evidence to add, please send it now.",
+                embed=ticketembed(interaction.client), view=ticketbuttonpanel())
 
             def check(m: discord.Message):  # m = discord.Message.
                 return m.author.id == interaction.user.id and m.channel.id == interaction.channel.id
@@ -79,10 +82,13 @@ class Ticketmodal(ui.Modal, title='Ban Appeal'):
             await interaction.response.send_message(content=f"Ticket created in {ticketchan.mention}!",
                                                     ephemeral=True)
             await ticketchan.send(
-                content=f"{interaction.user.mention} created a Ban Appeal:\n\n```Steam 64 ID: {self.steam64}\nBan Reason: {self.banreason}\nWhy they should be unbanned: {self.whyunban}```")
+                content=f"Welcome {interaction.user.mention}!\n\nWe will do our best to help you out.\nPlease be "
+                        f"patient and wait for a staff member to respond.\n\n```Steam 64 ID:\n{self.steam64}\n\nBan "
+                        f"Reason:\n{self.banreason}\n\nWhy they should be unbanned:\n{self.whyunban}```")
             await ticketchan.send(
-                embed=ticketembed(interaction.client),
-                view=ticketbuttonpanel())
+                content=f"**Please confirm that the information above is correct.**\n"
+                        f"If you do not respond in 5 minutes, this ticket will automatically close."
+                        f"\n\nIf you have any extra evidence to add, please send it now.", embed=ticketembed(interaction.client), view=ticketbuttonpanel())
 
             def check(m: discord.Message):  # m = discord.Message.
                 return m.author.id == interaction.user.id and m.channel.id == interaction.channel.id
