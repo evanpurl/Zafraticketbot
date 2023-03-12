@@ -16,7 +16,6 @@ timeout = 300  # seconds
 def ticketembed(bot):
     embed = discord.Embed(description=f"When you are finished, click the close ticket button below.", color=discord.Color.blue(),
                           timestamp=datetime.datetime.now())
-    embed.set_author(name=bot.user.name, icon_url=bot.user.avatar)
     return embed
 
 
