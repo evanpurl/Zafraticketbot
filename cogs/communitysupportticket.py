@@ -37,7 +37,9 @@ class Ticketmodal(ui.Modal, title='Community Support Ticket'):
                                                     ephemeral=True)
             await ticketchan.send(
                 content=f'Welcome {interaction.user.mention}!\n\nWe will do our best to help you out.\nPlease be '
-                        f'patient and wait for a staff member to respond.\n\n```json In-game Name:\n"{self.ingamename}"\n\nIssue:\n"{self.issue}"```')
+                        f'patient and wait for a staff member to respond.\n\n```json'
+                        f'Issue:\n"{self.issue}"'
+                        f'```')
             await ticketchan.send(
                 content=f"**Please confirm that the information above is correct.**\n"
                         f"If you do not respond in 5 minutes, this ticket will automatically close."
@@ -76,7 +78,9 @@ class Ticketmodal(ui.Modal, title='Community Support Ticket'):
                                                     ephemeral=True)
             await ticketchan.send(
                 content=f'Welcome {interaction.user.mention}!\n\nWe will do our best to help you out.\nPlease be '
-                        f'patient and wait for a staff member to respond.\n\n```json In-game Name:\n"{self.ingamename}"\n\nIssue:\n"{self.issue}"```')
+                        f'patient and wait for a staff member to respond.\n\n```json'
+                        f'Issue:\n"{self.issue}"'
+                        f'```')
             await ticketchan.send(
                 content=f"**Please confirm that the information above is correct.**\n"
                         f"If you do not respond in 5 minutes, this ticket will automatically close."
