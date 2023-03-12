@@ -14,8 +14,7 @@ timeout = 300  # seconds
 # ticket-username-banappeal
 
 def ticketembed(bot):
-    embed = discord.Embed(description=f"When you are finished, click the close ticket button below. This ticket will "
-                                      f"close in x minutes if no message is sent.", color=discord.Color.blue(),
+    embed = discord.Embed(description=f"When you are finished, click the close ticket button below.", color=discord.Color.blue(),
                           timestamp=datetime.datetime.now())
     embed.set_author(name=bot.user.name, icon_url=bot.user.avatar)
     return embed
@@ -23,7 +22,7 @@ def ticketembed(bot):
 
 class Ticketmodal(ui.Modal, title='Ban Appeal'):
     steam64 = ui.TextInput(label='What is your Steam64 ID?', style=discord.TextStyle.short, max_length=100,
-                           placeholder="(name)")
+                           placeholder="(id)")
     banreason = ui.TextInput(label='For what reason were you banned?', style=discord.TextStyle.paragraph,
                              max_length=500, placeholder="(Hacking, Griefing, etc.)")
     whyunban = ui.TextInput(label='Why do you think you should be unbanned?', style=discord.TextStyle.paragraph,
