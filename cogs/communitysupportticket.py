@@ -37,7 +37,7 @@ class Ticketmodal(ui.Modal, title='Community Support Ticket'):
                                                     ephemeral=True)
             await ticketchan.send(
                 content=f'Welcome {interaction.user.mention}!\n\nWe will do our best to help you out.\nPlease be '
-                        f'patient and wait for a staff member to respond.\n\n```json'
+                        f'patient and wait for a staff member to respond.\n\n```json\n'
                         f'Issue:\n"{self.issue}"'
                         f'```')
             await ticketchan.send(
@@ -78,7 +78,7 @@ class Ticketmodal(ui.Modal, title='Community Support Ticket'):
                                                     ephemeral=True)
             await ticketchan.send(
                 content=f'Welcome {interaction.user.mention}!\n\nWe will do our best to help you out.\nPlease be '
-                        f'patient and wait for a staff member to respond.\n\n```json'
+                        f'patient and wait for a staff member to respond.\n\n```json\n'
                         f'Issue:\n"{self.issue}"'
                         f'```')
             await ticketchan.send(
