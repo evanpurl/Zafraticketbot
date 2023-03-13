@@ -148,8 +148,8 @@ class ticketbuttonpanel(discord.ui.View):
                                                                                                               'Staff '
                                                                                                               'Manager']
             if any(role.name in rolelist for role in interaction.user.roles):
-                await interaction.response.send_message(content=f"Ticket has been claimed by {interaction.user.mention}")
                 button.disabled = True
+                await interaction.response.send_message(content=f"Ticket has been claimed by {interaction.user.mention}")
             else:
                 await interaction.response.send_message(content=f"You're not authorized to do that", ephemeral=True)
         except Exception as e:
