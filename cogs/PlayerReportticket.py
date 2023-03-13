@@ -14,10 +14,8 @@ timeout = 300  # seconds
 # ticket-username-playerreport
 
 def ticketembed(bot):
-    embed = discord.Embed(description=f"When you are finished, click the close ticket button below. This ticket will "
-                                      f"close in x minutes if no message is sent.", color=discord.Color.blue(),
+    embed = discord.Embed(description=f"When you are finished, click the close ticket button below.", color=discord.Color.blue(),
                           timestamp=datetime.datetime.now())
-    embed.set_author(name=bot.user.name, icon_url=bot.user.avatar)
     return embed
 
 
@@ -41,10 +39,14 @@ class Ticketmodal(ui.Modal, title='Player Report Ticket'):
             await interaction.response.send_message(content=f"Ticket created in {ticketchan.mention}!",
                                                     ephemeral=True)
             await ticketchan.send(
-                content=f"{interaction.user.mention} created a Player Report:\n\n```Person who was reported: {self.ingamename}\nTheir Steam64 ID: {self.s64id}\nServer: {self.server}\nReason for reporting: {self.reason}```")
+                content=f'Welcome {interaction.user.mention}!\n\nWe will do our best to help you out.\nPlease be '
+                        f'patient and wait for a staff member to respond.\n\n```json\nReported Player:\n"{self.ingamename}"\n'
+                        f'\nSteam64 ID:\n"{self.s64id}"\n\nReason for reporting:\n"{self.reason}"```')
             await ticketchan.send(
-                embed=ticketembed(interaction.client),
-                view=ticketbuttonpanel())
+                content=f'**Please confirm that the information above is correct.**\n'
+                        f'If you do not respond in 5 minutes, this ticket will automatically close.'
+                        f'\n\nIf you have any extra evidence to add, please send it now.',
+                embed=ticketembed(interaction.client), view=ticketbuttonpanel())
 
             def check(m: discord.Message):  # m = discord.Message.
                 return m.author.id == interaction.user.id and m.channel.id == interaction.channel.id
@@ -77,10 +79,14 @@ class Ticketmodal(ui.Modal, title='Player Report Ticket'):
             await interaction.response.send_message(content=f"Ticket created in {ticketchan.mention}!",
                                                     ephemeral=True)
             await ticketchan.send(
-                content=f"{interaction.user.mention} created a Player Report:\n\n```Person who was reported: {self.ingamename}\nTheir Steam64 ID: {self.s64id}\nReason for reporting: {self.reason}```")
+                content=f'Welcome {interaction.user.mention}!\n\nWe will do our best to help you out.\nPlease be '
+                        f'patient and wait for a staff member to respond.\n\n```json\nReported Player:\n"{self.ingamename}"\n'
+                        f'\nSteam64 ID:\n"{self.s64id}"\n\nReason for reporting:\n"{self.reason}"```')
             await ticketchan.send(
-                embed=ticketembed(interaction.client),
-                view=ticketbuttonpanel())
+                content=f'**Please confirm that the information above is correct.**\n'
+                        f'If you do not respond in 5 minutes, this ticket will automatically close.'
+                        f'\n\nIf you have any extra evidence to add, please send it now.',
+                embed=ticketembed(interaction.client), view=ticketbuttonpanel())
 
             def check(m: discord.Message):  # m = discord.Message.
                 return m.author.id == interaction.user.id and m.channel.id == interaction.channel.id

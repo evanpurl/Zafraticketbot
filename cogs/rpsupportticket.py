@@ -14,10 +14,8 @@ timeout = 300  # seconds
 # ticket-username-roleplaysupport
 
 def ticketembed(bot):
-    embed = discord.Embed(description=f"When you are finished, click the close ticket button below. This ticket will "
-                                      f"close in x minutes if no message is sent.", color=discord.Color.blue(),
+    embed = discord.Embed(description=f"When you are finished, click the close ticket button below.", color=discord.Color.blue(),
                           timestamp=datetime.datetime.now())
-    embed.set_author(name=bot.user.name, icon_url=bot.user.avatar)
     return embed
 
 
@@ -40,10 +38,13 @@ class Ticketmodal(ui.Modal, title='Roleplay Support Ticket'):
             await interaction.response.send_message(content=f"Ticket created in {ticketchan.mention}!",
                                                     ephemeral=True)
             await ticketchan.send(
-                content=f"{interaction.user.mention} created a ticket: \n \n ```In-game Name: {self.ingamename}\nIssue: {self.issue}```")
+                content=f'Welcome {interaction.user.mention}!\n\nWe will do our best to help you out.\nPlease be '
+                        f'patient and wait for a staff member to respond.\n```json\nIn-game Name:\n"{self.ingamename}"\n\nIssue:\n"{self.issue}"```')
             await ticketchan.send(
-                embed=ticketembed(interaction.client),
-                view=ticketbuttonpanel())
+                content=f'**Please confirm that the information above is correct.**\n'
+                        f'If you do not respond in 5 minutes, this ticket will automatically close.'
+                        f'\n\nIf you have any extra evidence to add, please send it now.',
+                embed=ticketembed(interaction.client), view=ticketbuttonpanel())
 
             def check(m: discord.Message):  # m = discord.Message.
                 return m.author.id == interaction.user.id and m.channel.id == interaction.channel.id
@@ -76,10 +77,13 @@ class Ticketmodal(ui.Modal, title='Roleplay Support Ticket'):
             await interaction.response.send_message(content=f"Ticket created in {ticketchan.mention}!",
                                                     ephemeral=True)
             await ticketchan.send(
-                content=f"{interaction.user.mention} created a ticket: \n \n ```In-game Name: {self.ingamename}\nIssue: {self.issue}```")
+                content=f'Welcome {interaction.user.mention}!\n\nWe will do our best to help you out.\nPlease be '
+                        f'patient and wait for a staff member to respond.\n```json\nIn-game Name:\n"{self.ingamename}"\n\nIssue:\n"{self.issue}"```')
             await ticketchan.send(
-                embed=ticketembed(interaction.client),
-                view=ticketbuttonpanel())
+                content=f'**Please confirm that the information above is correct.**\n'
+                        f'If you do not respond in 5 minutes, this ticket will automatically close.'
+                        f'\n\nIf you have any extra evidence to add, please send it now.',
+                embed=ticketembed(interaction.client), view=ticketbuttonpanel())
 
             def check(m: discord.Message):  # m = discord.Message.
                 return m.author.id == interaction.user.id and m.channel.id == interaction.channel.id
