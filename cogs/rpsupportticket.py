@@ -144,12 +144,13 @@ class ticketbuttonpanel(discord.ui.View):
                        custom_id="roleplaysupport:claim")
     async def claim_button(self, interaction: discord.Interaction, button: discord.ui.Button):
         try:
-            rolelist = ['RP Junior Moderator', 'RP Moderator', 'RP Senior ', 'Moderator', 'RP Administrator', 'RP '
-                                                                                                              'Staff '
-                                                                                                              'Manager']
+            rolelist = ['RP Junior Moderator', 'RP Moderator', 'RP Senior ', 'RP Administrator', 'RP '
+                                                                                                 'Staff '
+                                                                                                 'Manager']
             if any(role.name in rolelist for role in interaction.user.roles):
                 button.disabled = True
-                await interaction.response.send_message(content=f"Ticket has been claimed by {interaction.user.mention}")
+                await interaction.response.send_message(
+                    content=f"Ticket has been claimed by {interaction.user.mention}")
                 await interaction.message.edit(view=self)
             else:
                 await interaction.response.send_message(content=f"You're not authorized to do that", ephemeral=True)

@@ -14,16 +14,19 @@ timeout = 300  # seconds
 # ticket-username-playerreport
 
 def ticketembed():
-    embed = discord.Embed(description=f"When you are finished, click the close ticket button below.", color=discord.Color.blue(),
+    embed = discord.Embed(description=f"When you are finished, click the close ticket button below.",
+                          color=discord.Color.blue(),
                           timestamp=datetime.datetime.now())
     return embed
 
 
 class Ticketmodal(ui.Modal, title='Player Report Ticket'):
-    ingamename = ui.TextInput(label="In-game name of person you're reporting:", style=discord.TextStyle.short, max_length=100)
-    s64id = ui.TextInput(label='Steam64 ID of the person you are reporting:', style=discord.TextStyle.short, max_length=100)
-    server = ui.TextInput(label='Server they are on:', style=discord.TextStyle.short,
+    ingamename = ui.TextInput(label="In-game name of person you're reporting:", style=discord.TextStyle.short,
+                              max_length=100)
+    s64id = ui.TextInput(label='Steam64 ID of the person you are reporting:', style=discord.TextStyle.short,
                          max_length=100)
+    server = ui.TextInput(label='Server they are on:', style=discord.TextStyle.short,
+                          max_length=100)
     reason = ui.TextInput(label='Reason for reporting this person?', style=discord.TextStyle.paragraph, max_length=500)
 
     async def on_submit(self, interaction: discord.Interaction):
@@ -142,6 +145,22 @@ class ticketbuttonpanel(discord.ui.View):
         except Exception as e:
             print(e)
 
+    @discord.ui.button(label="Claim Ticket", emoji="✅", style=discord.ButtonStyle.green,
+                       custom_id="playerreport:claim")
+    async def claim_button(self, interaction: discord.Interaction, button: discord.ui.Button):
+        try:
+            rolelist = ['SRP Senior ', 'SRP Administrator', 'SRP Staff Manager', 'SV Senior ', 'SV Administrator',
+                        'SV Staff Manager', 'RP Senior ', 'RP Administrator', 'RP Staff Manager']
+            if any(role.name in rolelist for role in interaction.user.roles):
+                button.disabled = True
+                await interaction.response.send_message(
+                    content=f"Ticket has been claimed by {interaction.user.mention}")
+                await interaction.message.edit(view=self)
+            else:
+                await interaction.response.send_message(content=f"You're not authorized to do that", ephemeral=True)
+        except Exception as e:
+            print(e)
+
     @commands.has_permissions(manage_channels=True)
     @discord.ui.button(label="Auto-Close Ticket", emoji="⏲️", style=discord.ButtonStyle.gray,
                        custom_id="playerreport:autoclose")
@@ -217,7 +236,7 @@ class playerrepticketcmd(commands.Cog):
 
     @commands.has_permissions(manage_roles=True)
     @app_commands.command(name="player-report-ticket", description="Command used by admin to create the "
-                                                                          "Player Report ticket message.")
+                                                                   "Player Report ticket message.")
     async def csticket(self, interaction: discord.Interaction) -> None:
         try:
             await interaction.response.send_message(embed=ticketmessageembed(self.bot), view=ticketbutton())

@@ -14,7 +14,8 @@ timeout = 300  # seconds
 # ticket-username-semivanillasupport
 
 def ticketembed():
-    embed = discord.Embed(description=f"When you are finished, click the close ticket button below.", color=discord.Color.blue(),
+    embed = discord.Embed(description=f"When you are finished, click the close ticket button below.",
+                          color=discord.Color.blue(),
                           timestamp=datetime.datetime.now())
     return embed
 
@@ -137,6 +138,23 @@ class ticketbuttonpanel(discord.ui.View):
 
                 await logchannel.send(file=transcript_file)
             await interaction.channel.delete()
+        except Exception as e:
+            print(e)
+
+    @discord.ui.button(label="Claim Ticket", emoji="✅", style=discord.ButtonStyle.green,
+                       custom_id="semivanillasupport:claim")
+    async def claim_button(self, interaction: discord.Interaction, button: discord.ui.Button):
+        try:
+            rolelist = ['SV Junior Moderator', 'SV Moderator', 'SV Senior ', 'SV Administrator', 'SV '
+                                                                                                 'Staff '
+                                                                                                 'Manager']
+            if any(role.name in rolelist for role in interaction.user.roles):
+                button.disabled = True
+                await interaction.response.send_message(
+                    content=f"Ticket has been claimed by {interaction.user.mention}")
+                await interaction.message.edit(view=self)
+            else:
+                await interaction.response.send_message(content=f"You're not authorized to do that", ephemeral=True)
         except Exception as e:
             print(e)
 

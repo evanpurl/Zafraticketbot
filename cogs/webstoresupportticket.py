@@ -142,6 +142,21 @@ class ticketbuttonpanel(discord.ui.View):
         except Exception as e:
             print(e)
 
+    @discord.ui.button(label="Claim Ticket", emoji="✅", style=discord.ButtonStyle.green,
+                       custom_id="webstoresupport:claim")
+    async def claim_button(self, interaction: discord.Interaction, button: discord.ui.Button):
+        try:
+            rolelist = ['Community Moderator']
+            if any(role.name in rolelist for role in interaction.user.roles):
+                button.disabled = True
+                await interaction.response.send_message(
+                    content=f"Ticket has been claimed by {interaction.user.mention}")
+                await interaction.message.edit(view=self)
+            else:
+                await interaction.response.send_message(content=f"You're not authorized to do that", ephemeral=True)
+        except Exception as e:
+            print(e)
+
     @commands.has_permissions(manage_channels=True)
     @discord.ui.button(label="Auto-Close Ticket", emoji="⏲️", style=discord.ButtonStyle.gray,
                        custom_id="webstoresupport:autoclose")

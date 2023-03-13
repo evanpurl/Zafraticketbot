@@ -14,14 +14,17 @@ timeout = 300  # seconds
 # ticket-username-semiroleplaysupport
 
 def ticketembed():
-    embed = discord.Embed(description=f"When you are finished, click the close ticket button below.", color=discord.Color.blue(),
+    embed = discord.Embed(description=f"When you are finished, click the close ticket button below.",
+                          color=discord.Color.blue(),
                           timestamp=datetime.datetime.now())
     return embed
 
 
 class Ticketmodal(ui.Modal, title='Semi-Roleplay Support Ticket'):
-    ingamename = ui.TextInput(label='WHAT IS YOUR IN-GAME NAME?', style=discord.TextStyle.short, max_length=100, placeholder="(name)")
-    issue = ui.TextInput(label='PLEASE EXPLAIN WHAT THIS TICKET IS ABOUT:', style=discord.TextStyle.paragraph, max_length=1500, placeholder="(Issue)")
+    ingamename = ui.TextInput(label='WHAT IS YOUR IN-GAME NAME?', style=discord.TextStyle.short, max_length=100,
+                              placeholder="(name)")
+    issue = ui.TextInput(label='PLEASE EXPLAIN WHAT THIS TICKET IS ABOUT:', style=discord.TextStyle.paragraph,
+                         max_length=1500, placeholder="(Issue)")
 
     async def on_submit(self, interaction: discord.Interaction):
         overwrites = {
@@ -139,6 +142,23 @@ class ticketbuttonpanel(discord.ui.View):
         except Exception as e:
             print(e)
 
+    @discord.ui.button(label="Claim Ticket", emoji="✅", style=discord.ButtonStyle.green,
+                       custom_id="semiroleplaysupport:claim")
+    async def claim_button(self, interaction: discord.Interaction, button: discord.ui.Button):
+        try:
+            rolelist = ['SRP Junior Moderator', 'SRP Moderator', 'SRP Senior ', 'SRP Administrator', 'SRP '
+                                                                                                     'Staff '
+                                                                                                     'Manager']
+            if any(role.name in rolelist for role in interaction.user.roles):
+                button.disabled = True
+                await interaction.response.send_message(
+                    content=f"Ticket has been claimed by {interaction.user.mention}")
+                await interaction.message.edit(view=self)
+            else:
+                await interaction.response.send_message(content=f"You're not authorized to do that", ephemeral=True)
+        except Exception as e:
+            print(e)
+
     @commands.has_permissions(manage_channels=True)
     @discord.ui.button(label="Auto-Close Ticket", emoji="⏲️", style=discord.ButtonStyle.gray,
                        custom_id="semiroleplaysupport:autoclose")
@@ -214,7 +234,7 @@ class semirpticketcmd(commands.Cog):
 
     @commands.has_permissions(manage_roles=True)
     @app_commands.command(name="semi-roleplay-support-ticket", description="Command used by admin to create the "
-                                                                          "Semi-Roleplay support ticket message.")
+                                                                           "Semi-Roleplay support ticket message.")
     async def csticket(self, interaction: discord.Interaction) -> None:
         try:
             await interaction.response.send_message(embed=ticketmessageembed(self.bot), view=ticketbutton())
