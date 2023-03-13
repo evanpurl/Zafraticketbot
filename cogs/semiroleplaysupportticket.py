@@ -215,6 +215,11 @@ class semirpticketcmd(commands.Cog):
         except Exception as e:
             print(e)
 
+    @csticket.error
+    async def onerror(self, interaction: discord.Interaction, error: app_commands.MissingPermissions):
+        await interaction.response.send_message(content=error,
+                                                ephemeral=True)
+
 
 async def setup(bot):
     await bot.add_cog(semirpticketcmd(bot))
