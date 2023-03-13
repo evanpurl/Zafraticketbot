@@ -14,7 +14,8 @@ timeout = 300  # seconds
 # ticket-username-roleplaysupport
 
 def ticketembed():
-    embed = discord.Embed(description=f"When you are finished, click the close ticket button below.", color=discord.Color.blue(),
+    embed = discord.Embed(description=f"When you are finished, click the close ticket button below.",
+                          color=discord.Color.blue(),
                           timestamp=datetime.datetime.now())
     return embed
 
@@ -139,6 +140,20 @@ class ticketbuttonpanel(discord.ui.View):
         except Exception as e:
             print(e)
 
+    @discord.ui.button(label="Claim Ticket", emoji="✅", style=discord.ButtonStyle.green,
+                       custom_id="roleplaysupport:claim")
+    async def claim_button(self, interaction: discord.Interaction, button: discord.ui.Button):
+        try:
+            role = discord.utils.find(lambda r: r.name == 'RP Junior Moderator' or 'RP Moderator' or 'RP Senior '
+                                                                                                     'Moderator' or
+                                                'RP Administrator' or 'RP Staff Manager', interaction.guild.roles)
+            if role not in interaction.user.roles:
+                await interaction.channel.send(content="You are not authorized to do this.")
+            else:
+                await interaction.channel.send(content=f"Ticket has been claimed by {interaction.user.mention}")
+        except Exception as e:
+            print(e)
+
     @commands.has_permissions(manage_channels=True)
     @discord.ui.button(label="Auto-Close Ticket", emoji="⏲️", style=discord.ButtonStyle.gray,
                        custom_id="roleplaysupport:autoclose")
@@ -214,7 +229,7 @@ class rpticketcmd(commands.Cog):
 
     @commands.has_permissions(manage_roles=True)
     @app_commands.command(name="roleplay-support-ticket", description="Command used by admin to create the Roleplay "
-                                                                     "Support ticket message.")
+                                                                      "Support ticket message.")
     async def csticket(self, interaction: discord.Interaction) -> None:
         try:
             await interaction.response.send_message(embed=ticketmessageembed(self.bot), view=ticketbutton())
