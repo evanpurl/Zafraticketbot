@@ -24,7 +24,7 @@ class Ticketmodal(ui.Modal, title='Semi-Roleplay Support Ticket'):
     ingamename = ui.TextInput(label='WHAT IS YOUR IN-GAME NAME?', style=discord.TextStyle.short, max_length=100,
                               placeholder="(name)")
     issue = ui.TextInput(label='PLEASE EXPLAIN WHAT THIS TICKET IS ABOUT:', style=discord.TextStyle.paragraph,
-                         max_length=1500, placeholder="(Issue)")
+                         max_length=300, placeholder="(Issue)")
 
     async def on_submit(self, interaction: discord.Interaction):
         overwrites = {

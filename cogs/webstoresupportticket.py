@@ -21,9 +21,9 @@ def ticketembed():
 
 class Ticketmodal(ui.Modal, title='Webstore Support Ticket'):
     issue = ui.TextInput(label='What issues are you having with the Webstore?', style=discord.TextStyle.paragraph,
-                         max_length=600)
+                         max_length=300)
     suggestions = ui.TextInput(label='Do you have any suggestions for the Webstore?', style=discord.TextStyle.paragraph,
-                               max_length=600, required=False)
+                               max_length=300, required=False)
 
     async def on_submit(self, interaction: discord.Interaction):
 

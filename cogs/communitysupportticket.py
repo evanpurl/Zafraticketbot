@@ -20,7 +20,7 @@ def ticketembed():
 
 
 class Ticketmodal(ui.Modal, title='Community Support Ticket'):
-    issue = ui.TextInput(label='PLEASE EXPLAIN WHAT THIS TICKET IS ABOUT:', style=discord.TextStyle.paragraph, max_length=1500)
+    issue = ui.TextInput(label='PLEASE EXPLAIN WHAT THIS TICKET IS ABOUT:', style=discord.TextStyle.paragraph, max_length=300)
 
     async def on_submit(self, interaction: discord.Interaction):
         overwrites = {
