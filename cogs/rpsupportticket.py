@@ -147,10 +147,11 @@ class ticketbuttonpanel(discord.ui.View):
             role = discord.utils.find(lambda r: r.name == 'RP Junior Moderator' or 'RP Moderator' or 'RP Senior '
                                                                                                      'Moderator' or
                                                 'RP Administrator' or 'RP Staff Manager', interaction.guild.roles)
+            print(role)
             if role not in interaction.user.roles:
-                await interaction.channel.send(content="You are not authorized to do this.")
+                await interaction.response.send_message(content="You are not authorized to do this.")
             else:
-                await interaction.channel.send(content=f"Ticket has been claimed by {interaction.user.mention}")
+                await interaction.response.send_message(content=f"Ticket has been claimed by {interaction.user.mention}")
         except Exception as e:
             print(e)
 
