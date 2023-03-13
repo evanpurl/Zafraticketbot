@@ -147,7 +147,8 @@ class ticketbuttonpanel(discord.ui.View):
             rolelist = ['RP Junior Moderator', 'RP Moderator', 'RP Senior ', 'Moderator', 'RP Administrator', 'RP '
                                                                                                               'Staff '
                                                                                                               'Manager']
-            print(interaction.user.roles)
+            for role in interaction.user.roles:
+                print(role.name)
             if any(role in rolelist for role in interaction.user.roles):
                 await interaction.response.send_message(content=f"Ticket has been claimed by {interaction.user.mention}")
             else:
