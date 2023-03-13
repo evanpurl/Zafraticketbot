@@ -13,7 +13,7 @@ timeout = 300  # seconds
 # Needs "manage role" perms
 # ticket-username-semiroleplaysupport
 
-def ticketembed(bot):
+def ticketembed():
     embed = discord.Embed(description=f"When you are finished, click the close ticket button below.", color=discord.Color.blue(),
                           timestamp=datetime.datetime.now())
     return embed
@@ -43,10 +43,10 @@ class Ticketmodal(ui.Modal, title='Semi-Roleplay Support Ticket'):
                 content=f'**Please confirm that the information above is correct.**\n'
                         f'If you do not respond in 5 minutes, this ticket will automatically close.'
                         f'\n\nIf you have any extra evidence to add, please send it now.',
-                embed=ticketembed(interaction.client), view=ticketbuttonpanel())
+                embed=ticketembed(), view=ticketbuttonpanel())
 
             def check(m: discord.Message):  # m = discord.Message.
-                return m.author.id == interaction.user.id and m.channel.id == interaction.channel.id
+                return m.author.id == interaction.user.id and m.channel.id == ticketchan.id
 
             try:
                 msg = await interaction.client.wait_for('message', check=check, timeout=timeout)
@@ -83,10 +83,10 @@ class Ticketmodal(ui.Modal, title='Semi-Roleplay Support Ticket'):
                 content=f'**Please confirm that the information above is correct.**\n'
                         f'If you do not respond in 5 minutes, this ticket will automatically close.'
                         f'\n\nIf you have any extra evidence to add, please send it now.',
-                embed=ticketembed(interaction.client), view=ticketbuttonpanel())
+                embed=ticketembed(), view=ticketbuttonpanel())
 
             def check(m: discord.Message):  # m = discord.Message.
-                return m.author.id == interaction.user.id and m.channel.id == interaction.channel.id
+                return m.author.id == interaction.user.id and m.channel.id == ticketchan.id
 
             try:
                 msg = await interaction.client.wait_for('message', check=check, timeout=timeout)
