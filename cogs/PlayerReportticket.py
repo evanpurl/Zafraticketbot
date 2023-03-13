@@ -27,7 +27,7 @@ class Ticketmodal(ui.Modal, title='Player Report Ticket'):
                          max_length=100)
     server = ui.TextInput(label='Server they are on:', style=discord.TextStyle.short,
                           max_length=100)
-    reason = ui.TextInput(label='Reason for reporting this person?', style=discord.TextStyle.paragraph, max_length=500)
+    reason = ui.TextInput(label='Reason for reporting this person?', style=discord.TextStyle.paragraph, max_length=250)
 
     async def on_submit(self, interaction: discord.Interaction):
         overwrites = {
@@ -44,12 +44,11 @@ class Ticketmodal(ui.Modal, title='Player Report Ticket'):
             await ticketchan.send(
                 content=f'Welcome {interaction.user.mention}!\n\nWe will do our best to help you out.\nPlease be '
                         f'patient and wait for a staff member to respond.\n\n```json\nReported Player:\n"{self.ingamename}"\n'
-                        f'\nSteam64 ID:\n"{self.s64id}"\n\nReason for reporting:\n"{self.reason}"```')
-            await ticketchan.send(
-                content=f'**Please confirm that the information above is correct.**\n'
-                        f'If you do not respond in 5 minutes, this ticket will automatically close.'
-                        f'\n\nIf you have any extra evidence to add, please send it now.',
-                embed=ticketembed(interaction.client), view=ticketbuttonpanel())
+                        f'\nSteam64 ID:\n"{self.s64id}"\n\nReason for reporting:\n"{self.reason}"```'
+                        f'\n**Please confirm that the information above is correct.**'
+                        f'\nIf you do not respond in 5 minutes, this ticket will automatically close.'
+                        f'\n\nIf you have any extra evidence to add, please send it now.', embed=ticketembed(),
+                view=ticketbuttonpanel())
 
             def check(m: discord.Message):  # m = discord.Message.
                 return m.author.id == interaction.user.id and m.channel.id == ticketchan.id
@@ -84,12 +83,10 @@ class Ticketmodal(ui.Modal, title='Player Report Ticket'):
             await ticketchan.send(
                 content=f'Welcome {interaction.user.mention}!\n\nWe will do our best to help you out.\nPlease be '
                         f'patient and wait for a staff member to respond.\n\n```json\nReported Player:\n"{self.ingamename}"\n'
-                        f'\nSteam64 ID:\n"{self.s64id}"\n\nReason for reporting:\n"{self.reason}"```')
-            await ticketchan.send(
-                content=f'**Please confirm that the information above is correct.**\n'
-                        f'If you do not respond in 5 minutes, this ticket will automatically close.'
-                        f'\n\nIf you have any extra evidence to add, please send it now.',
-                embed=ticketembed(), view=ticketbuttonpanel())
+                        f'\nSteam64 ID:\n"{self.s64id}"\n\nReason for reporting:\n"{self.reason}"```'
+                        f'\n**Please confirm that the information above is correct.**'
+                        f'\nIf you do not respond in 5 minutes, this ticket will automatically close.'
+                        f'\n\nIf you have any extra evidence to add, please send it now.',embed=ticketembed(), view=ticketbuttonpanel())
 
             def check(m: discord.Message):  # m = discord.Message.
                 return m.author.id == interaction.user.id and m.channel.id == ticketchan.id
