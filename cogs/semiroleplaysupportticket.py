@@ -144,7 +144,7 @@ class ticketbuttonpanel(discord.ui.View):
                        custom_id="semiroleplaysupport:claim")
     async def claim_button(self, interaction: discord.Interaction, button: discord.ui.Button):
         try:
-            rolelist = ['SRP Junior Moderator', 'SRP Moderator', 'SRP Senior ', 'SRP Administrator', 'SRP '
+            rolelist = ['SRP Junior Moderator', 'SRP Moderator', 'SRP Senior Moderator', 'SRP Administrator', 'SRP '
                                                                                                      'Staff '
                                                                                                      'Manager']
             if any(role.name in rolelist for role in interaction.user.roles):

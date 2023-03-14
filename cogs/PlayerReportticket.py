@@ -146,8 +146,8 @@ class ticketbuttonpanel(discord.ui.View):
                        custom_id="playerreport:claim")
     async def claim_button(self, interaction: discord.Interaction, button: discord.ui.Button):
         try:
-            rolelist = ['SRP Senior ', 'SRP Administrator', 'SRP Staff Manager', 'SV Senior ', 'SV Administrator',
-                        'SV Staff Manager', 'RP Senior ', 'RP Administrator', 'RP Staff Manager']
+            rolelist = ['SRP Senior ', 'SRP Administrator', 'SRP Staff Manager', 'SV Senior Moderator', 'SV Administrator',
+                        'SV Staff Manager', 'RP Senior Moderator', 'RP Administrator', 'RP Staff Manager', 'RT Senior Moderator', 'RT Administrator', 'RT Staff Manager']
             if any(role.name in rolelist for role in interaction.user.roles):
                 button.disabled = True
                 await interaction.response.send_message(

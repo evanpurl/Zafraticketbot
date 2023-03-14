@@ -11,7 +11,7 @@ timeout = 300  # seconds
 
 
 # Needs "manage role" perms
-# ticket-username-roleplaysupport
+# ticket-username-rusturnedsupport
 
 def ticketembed():
     embed = discord.Embed(description=f"When you are finished, click the close ticket button below.",
@@ -20,11 +20,11 @@ def ticketembed():
     return embed
 
 
-class Ticketmodal(ui.Modal, title='Roleplay Support Ticket'):
+class Ticketmodal(ui.Modal, title='Rusturned Support Ticket'):
     ingamename = ui.TextInput(label='WHAT IS YOUR IN-GAME NAME?', style=discord.TextStyle.short, max_length=100,
                               placeholder="(name)")
     issue = ui.TextInput(label='PLEASE EXPLAIN WHAT THIS TICKET IS ABOUT:', style=discord.TextStyle.paragraph,
-                         max_length=400, placeholder="(Issue)")
+                         max_length=300, placeholder="(Issue)")
 
     async def on_submit(self, interaction: discord.Interaction):
         overwrites = {
@@ -34,13 +34,14 @@ class Ticketmodal(ui.Modal, title='Roleplay Support Ticket'):
         ticketcat = discord.utils.get(interaction.guild.categories, name="𝙏𝙞𝙘𝙠𝙚𝙩𝙨")
         if ticketcat:
             ticketchan = await interaction.guild.create_text_channel(
-                f"ticket-{interaction.user.name}-roleplaysupport", category=ticketcat,
+                f"ticket-{interaction.user.name}-rusturnedsupport", category=ticketcat,
                 overwrites=overwrites)
             await interaction.response.send_message(content=f"Ticket created in {ticketchan.mention}!",
                                                     ephemeral=True)
             await ticketchan.send(
                 content=f'Welcome {interaction.user.mention}!\n\nWe will do our best to help you out.\nPlease be '
-                        f'patient and wait for a staff member to respond.\n```json\nIn-game Name:\n"{self.ingamename}"\n\nIssue:\n"{self.issue}"```'
+                        f'patient and wait for a staff member to respond.\n\n```json\nIn-game Name:\n"{self.ingamename}"\n'
+                        f'\nIssue:\n"{self.issue}"```'
                         f'\n**Please confirm that the information above is correct.**'
                         f'\nIf you do not respond in 5 minutes, this ticket will automatically close.'
                         f'\n\nIf you have any extra evidence to add, please send it now.', embed=ticketembed(),
@@ -52,7 +53,7 @@ class Ticketmodal(ui.Modal, title='Roleplay Support Ticket'):
             try:
                 msg = await interaction.client.wait_for('message', check=check, timeout=timeout)
             except asyncio.TimeoutError:
-                lchanid = await dbgetlogchannel("RP Support")
+                lchanid = await dbgetlogchannel("Rusturned Support")
                 logchannel = discord.utils.get(interaction.guild.channels,
                                                id=lchanid[0])
                 if logchannel:
@@ -73,12 +74,13 @@ class Ticketmodal(ui.Modal, title='Roleplay Support Ticket'):
 
         else:
             ticketchan = await interaction.guild.create_text_channel(
-                f"ticket-{interaction.user.name}-roleplaysupport", overwrites=overwrites)
+                f"ticket-{interaction.user.name}-rusturnedsupport", overwrites=overwrites)
             await interaction.response.send_message(content=f"Ticket created in {ticketchan.mention}!",
                                                     ephemeral=True)
             await ticketchan.send(
                 content=f'Welcome {interaction.user.mention}!\n\nWe will do our best to help you out.\nPlease be '
-                        f'patient and wait for a staff member to respond.\n```json\nIn-game Name:\n"{self.ingamename}"\n\nIssue:\n"{self.issue}"```'
+                        f'patient and wait for a staff member to respond.\n\n```json\nIn-game Name:\n"{self.ingamename}"\n'
+                        f'\nIssue:\n"{self.issue}"```'
                         f'\n**Please confirm that the information above is correct.**'
                         f'\nIf you do not respond in 5 minutes, this ticket will automatically close.'
                         f'\n\nIf you have any extra evidence to add, please send it now.', embed=ticketembed(),
@@ -90,7 +92,7 @@ class Ticketmodal(ui.Modal, title='Roleplay Support Ticket'):
             try:
                 msg = await interaction.client.wait_for('message', check=check, timeout=timeout)
             except asyncio.TimeoutError:
-                lchanid = await dbgetlogchannel("RP Support")
+                lchanid = await dbgetlogchannel("Rusturned Support")
                 logchannel = discord.utils.get(interaction.guild.channels,
                                                id=lchanid[0])
                 if logchannel:
@@ -115,10 +117,10 @@ class ticketbuttonpanel(discord.ui.View):
         super().__init__(timeout=None)
 
     @discord.ui.button(label="Close Ticket", emoji="🗑️", style=discord.ButtonStyle.red,
-                       custom_id="roleplaysupport:close")
+                       custom_id="rusturnedsupport:close")
     async def close_button(self, interaction: discord.Interaction, button: discord.ui.Button):
         try:
-            lchanid = await dbgetlogchannel("RP Support")
+            lchanid = await dbgetlogchannel("Rusturned Support")
             logchannel = discord.utils.get(interaction.guild.channels,
                                            id=lchanid[0])
             if logchannel:
@@ -139,10 +141,10 @@ class ticketbuttonpanel(discord.ui.View):
             print(e)
 
     @discord.ui.button(label="Claim Ticket", emoji="✅", style=discord.ButtonStyle.green,
-                       custom_id="roleplaysupport:claim")
+                       custom_id="rusturnedsupport:claim")
     async def claim_button(self, interaction: discord.Interaction, button: discord.ui.Button):
         try:
-            rolelist = ['RP Junior Moderator', 'RP Moderator', 'RP Senior Moderator', 'RP Administrator', 'RP '
+            rolelist = ['RT Junior Moderator', 'RT Moderator', 'RT Senior Moderator', 'RT Administrator', 'RT '
                                                                                                  'Staff '
                                                                                                  'Manager']
             if any(role.name in rolelist for role in interaction.user.roles):
@@ -157,7 +159,7 @@ class ticketbuttonpanel(discord.ui.View):
 
     @commands.has_permissions(manage_channels=True)
     @discord.ui.button(label="Auto-Close Ticket", emoji="⏲️", style=discord.ButtonStyle.gray,
-                       custom_id="roleplaysupport:autoclose")
+                       custom_id="rusturnedsupport:autoclose")
     async def auto_close_button(self, interaction: discord.Interaction, button: discord.ui.Button):
         try:
             if interaction.user.guild_permissions.manage_channels:
@@ -170,7 +172,7 @@ class ticketbuttonpanel(discord.ui.View):
                     while True:
                         msg = await interaction.client.wait_for('message', check=check, timeout=timeout)
                 except asyncio.TimeoutError:
-                    lchanid = await dbgetlogchannel("RP Support")
+                    lchanid = await dbgetlogchannel("Rusturned Support")
                     logchannel = discord.utils.get(interaction.guild.channels,
                                                    id=lchanid[0])
                     if logchannel:
@@ -200,11 +202,11 @@ class ticketbutton(discord.ui.View):
         super().__init__(timeout=None)
 
     @discord.ui.button(label="Create Ticket", emoji="📨", style=discord.ButtonStyle.blurple,
-                       custom_id="roleplaysupportbutton")
+                       custom_id="rusturnedsupportbutton")
     async def gray_button(self, interaction: discord.Interaction, button: discord.ui.Button):
         try:
             existticket = discord.utils.get(interaction.guild.channels,
-                                            name=f"ticket-{interaction.user.name.lower()}-roleplaysupport")
+                                            name=f"ticket-{interaction.user.name.lower()}-rusturnedsupport")
             if existticket:
                 await interaction.response.send_message(
                     content=f"You already have an existing ticket you silly goose. {existticket.mention}",
@@ -216,7 +218,7 @@ class ticketbutton(discord.ui.View):
 
 
 def ticketmessageembed(bot):
-    embed = discord.Embed(title="**Roleplay Support Tickets**",
+    embed = discord.Embed(title="**Rusturned Support Tickets**",
                           description=f"Do you need assistance? If so, click the button below!",
                           color=discord.Color.blue(),
                           timestamp=datetime.datetime.now())
@@ -224,26 +226,26 @@ def ticketmessageembed(bot):
     return embed
 
 
-class rpticketcmd(commands.Cog):
+class rtticketcmd(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
     @commands.has_permissions(manage_roles=True)
-    @app_commands.command(name="roleplay-support-ticket", description="Command used by admin to create the Roleplay "
-                                                                      "Support ticket message.")
-    async def csticket(self, interaction: discord.Interaction) -> None:
+    @app_commands.command(name="rusturned-support-ticket", description="Command used by admin to create the "
+                                                                       "Rusturned support ticket message.")
+    async def rtticket(self, interaction: discord.Interaction) -> None:
         try:
             await interaction.response.send_message(embed=ticketmessageembed(self.bot), view=ticketbutton())
         except Exception as e:
             print(e)
 
-    @csticket.error
+    @rtticket.error
     async def onerror(self, interaction: discord.Interaction, error: app_commands.MissingPermissions):
         await interaction.response.send_message(content=error,
                                                 ephemeral=True)
 
 
 async def setup(bot):
-    await bot.add_cog(rpticketcmd(bot))
+    await bot.add_cog(rtticketcmd(bot))
     bot.add_view(ticketbutton())  # line that inits persistent view
     bot.add_view(ticketbuttonpanel())
