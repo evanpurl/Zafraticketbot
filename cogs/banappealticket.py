@@ -106,7 +106,9 @@ class Ticketmodal(ui.Modal, title='Ban Appeal'):
             overwrite = discord.PermissionOverwrite()
             overwrite.send_messages = False
             for role in rolelist:
-                await ticketchan.set_permissions(discord.utils.get(interaction.guild.roles, name=role),
+                isrole = discord.utils.get(interaction.guild.roles, name=role)
+                print(isrole)
+                await ticketchan.set_permissions(isrole,
                                                  overwrite=overwrite)
             await interaction.response.send_message(content=f"Ticket created in {ticketchan.mention}!",
                                                     ephemeral=True)
