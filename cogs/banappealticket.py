@@ -13,9 +13,8 @@ timeout = 300  # seconds
 # ticket-username-banappeal
 
 
-rolelist = ['SRP Senior ', 'SRP Administrator', 'SRP Staff Manager', 'SV Senior Moderator', 'SV Administrator',
-            'SV Staff Manager', 'RP Senior Moderator', 'RP Administrator', 'RP Staff Manager', 'RT Senior '
-                                                                                               'Moderator',
+rolelist = ['SRP Senior Moderator', 'SRP Administrator', 'SRP Staff Manager', 'SV Senior Moderator', 'SV Administrator',
+            'SV Staff Manager', 'RP Senior Moderator', 'RP Administrator', 'RP Staff Manager', 'RT Senior Moderator',
             'RT Administrator', 'RT Staff Manager']
 
 
