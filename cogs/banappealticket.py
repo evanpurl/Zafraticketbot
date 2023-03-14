@@ -9,12 +9,19 @@ from util.dbsetget import dbgetlogchannel
 
 timeout = 300  # seconds
 
-
 # Needs "manage role" perms
 # ticket-username-banappeal
 
+
+rolelist = ['SRP Senior ', 'SRP Administrator', 'SRP Staff Manager', 'SV Senior Moderator', 'SV Administrator',
+            'SV Staff Manager', 'RP Senior Moderator', 'RP Administrator', 'RP Staff Manager', 'RT Senior '
+                                                                                               'Moderator',
+            'RT Administrator', 'RT Staff Manager']
+
+
 def ticketembed():
-    embed = discord.Embed(description=f"When you are finished, click the close ticket button below.", color=discord.Color.blue(),
+    embed = discord.Embed(description=f"When you are finished, click the close ticket button below.",
+                          color=discord.Color.blue(),
                           timestamp=datetime.datetime.now())
     return embed
 
@@ -37,6 +44,11 @@ class Ticketmodal(ui.Modal, title='Ban Appeal'):
             ticketchan = await interaction.guild.create_text_channel(
                 f"ticket-{interaction.user.name}-banappeal", category=ticketcat,
                 overwrites=overwrites)
+            overwrite = discord.PermissionOverwrite()
+            overwrite.send_messages = False
+            for role in rolelist:
+                await ticketchan.set_permissions(discord.utils.get(interaction.guild.roles, name=role),
+                                                 overwrite=overwrite)
             await interaction.response.send_message(content=f"Ticket created in {ticketchan.mention}!",
                                                     ephemeral=True)
             await ticketchan.send(
@@ -76,6 +88,11 @@ class Ticketmodal(ui.Modal, title='Ban Appeal'):
         else:
             ticketchan = await interaction.guild.create_text_channel(
                 f"ticket-{interaction.user.name}-banappeal", overwrites=overwrites)
+            overwrite = discord.PermissionOverwrite()
+            overwrite.send_messages = False
+            for role in rolelist:
+                await ticketchan.set_permissions(discord.utils.get(interaction.guild.roles, name=role),
+                                                 overwrite=overwrite)
             await interaction.response.send_message(content=f"Ticket created in {ticketchan.mention}!",
                                                     ephemeral=True)
             await ticketchan.send(
@@ -145,9 +162,6 @@ class ticketbuttonpanel(discord.ui.View):
                        custom_id="banappeal:claim")
     async def claim_button(self, interaction: discord.Interaction, button: discord.ui.Button):
         try:
-            rolelist = ['SRP Senior ', 'SRP Administrator', 'SRP Staff Manager', 'SV Senior Moderator', 'SV Administrator',
-                        'SV Staff Manager', 'RP Senior Moderator', 'RP Administrator', 'RP Staff Manager', 'RT Senior '
-                                                                                                           'Moderator', 'RT Administrator', 'RT Staff Manager']
             if any(role.name in rolelist for role in interaction.user.roles):
                 button.disabled = True
                 await interaction.response.send_message(

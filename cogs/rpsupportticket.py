@@ -9,9 +9,14 @@ from util.dbsetget import dbgetlogchannel
 
 timeout = 300  # seconds
 
-
 # Needs "manage role" perms
 # ticket-username-roleplaysupport
+
+
+rolelist = ['RP Junior Moderator', 'RP Moderator', 'RP Senior Moderator', 'RP Administrator', 'RP '
+                                                                                              'Staff '
+                                                                                              'Manager']
+
 
 def ticketembed():
     embed = discord.Embed(description=f"When you are finished, click the close ticket button below.",
@@ -36,6 +41,11 @@ class Ticketmodal(ui.Modal, title='Roleplay Support Ticket'):
             ticketchan = await interaction.guild.create_text_channel(
                 f"ticket-{interaction.user.name}-roleplaysupport", category=ticketcat,
                 overwrites=overwrites)
+            overwrite = discord.PermissionOverwrite()
+            overwrite.send_messages = False
+            for role in rolelist:
+                await ticketchan.set_permissions(discord.utils.get(interaction.guild.roles, name=role),
+                                                 overwrite=overwrite)
             await interaction.response.send_message(content=f"Ticket created in {ticketchan.mention}!",
                                                     ephemeral=True)
             await ticketchan.send(
@@ -74,6 +84,11 @@ class Ticketmodal(ui.Modal, title='Roleplay Support Ticket'):
         else:
             ticketchan = await interaction.guild.create_text_channel(
                 f"ticket-{interaction.user.name}-roleplaysupport", overwrites=overwrites)
+            overwrite = discord.PermissionOverwrite()
+            overwrite.send_messages = False
+            for role in rolelist:
+                await ticketchan.set_permissions(discord.utils.get(interaction.guild.roles, name=role),
+                                                 overwrite=overwrite)
             await interaction.response.send_message(content=f"Ticket created in {ticketchan.mention}!",
                                                     ephemeral=True)
             await ticketchan.send(
@@ -142,9 +157,6 @@ class ticketbuttonpanel(discord.ui.View):
                        custom_id="roleplaysupport:claim")
     async def claim_button(self, interaction: discord.Interaction, button: discord.ui.Button):
         try:
-            rolelist = ['RP Junior Moderator', 'RP Moderator', 'RP Senior Moderator', 'RP Administrator', 'RP '
-                                                                                                 'Staff '
-                                                                                                 'Manager']
             if any(role.name in rolelist for role in interaction.user.roles):
                 button.disabled = True
                 await interaction.response.send_message(
