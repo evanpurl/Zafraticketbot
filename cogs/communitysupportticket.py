@@ -45,7 +45,7 @@ class closemodal(ui.Modal, title='Community Support Ticket Closure'):
                 filename=f"transcript-{interaction.channel.name}.html",
             )
 
-            await logchannel.send(content=closemessageembed(interaction.client, interaction.user, self.reason), file=transcript_file)
+            await logchannel.send(embed=closemessageembed(interaction.client, interaction.user, self.reason), file=transcript_file)
 
         await interaction.channel.delete()
 
