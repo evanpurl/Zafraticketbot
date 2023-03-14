@@ -31,7 +31,7 @@ class Ticketmodal(ui.Modal, title='Semi-Roleplay Support Ticket'):
             interaction.guild.default_role: discord.PermissionOverwrite(read_messages=False),
             interaction.user: discord.PermissionOverwrite(read_messages=True),
             interaction.guild.me: discord.PermissionOverwrite(read_messages=True)}
-        ticketcat = discord.utils.get(interaction.guild.categories, name="Tickets")
+        ticketcat = discord.utils.get(interaction.guild.categories, name="𝙏𝙞𝙘𝙠𝙚𝙩𝙨")
         if ticketcat:
             ticketchan = await interaction.guild.create_text_channel(
                 f"ticket-{interaction.user.name}-semiroleplaysupport", category=ticketcat,
