@@ -162,6 +162,9 @@ class ticketbuttonpanel(discord.ui.View):
                 await interaction.response.send_message(
                     content=f"Ticket has been claimed by {interaction.user.mention}")
                 await interaction.message.edit(view=self)
+                overwrite = discord.PermissionOverwrite()
+                overwrite.send_messages = True
+                await interaction.channel.set_permissions(interaction.user, overwrite=overwrite)
             else:
                 await interaction.response.send_message(content=f"You're not authorized to do that", ephemeral=True)
         except Exception as e:
