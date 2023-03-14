@@ -22,7 +22,7 @@ class uptimetask(commands.Cog):
     async def status_message(self):
         try:
             await self.bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching,
-                                                                   name=f"/creator \n {datetime.timedelta(seconds=round(time.time() - starttime))}"))
+                                                                   name=f"{datetime.timedelta(seconds=round(time.time() - starttime))}"))
         except Exception as e:
             print(e)
 
