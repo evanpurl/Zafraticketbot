@@ -104,13 +104,13 @@ class Ticketmodal(ui.Modal, title='Player Report Ticket'):
             ticketchan = await interaction.guild.create_text_channel(
                 f"ticket-{interaction.user.name}-playerreport", category=ticketcat,
                 overwrites=overwrites)
+            await interaction.response.send_message(content=f"Ticket created in {ticketchan.mention}!",
+                                                    ephemeral=True)
             overwrite = discord.PermissionOverwrite()
             overwrite.send_messages = False
             for role in rolelist:
                 await ticketchan.set_permissions(discord.utils.get(interaction.guild.roles, name=role),
                                                  overwrite=overwrite)
-            await interaction.response.send_message(content=f"Ticket created in {ticketchan.mention}!",
-                                                    ephemeral=True)
             await ticketchan.send(
                 content=f'Welcome {interaction.user.mention}!\n\nWe will do our best to help you out.\nPlease be '
                         f'patient and wait for a staff member to respond.\n\n```json\nReported Player:\n"{self.ingamename}"\n'
