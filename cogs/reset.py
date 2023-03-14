@@ -21,6 +21,7 @@ class resetcmd(commands.Cog):
         app_commands.Choice(name='Player Report', value=5),
         app_commands.Choice(name='Ban Appeal', value=6),
         app_commands.Choice(name='Webstore Support', value=7),
+        app_commands.Choice(name='Rusturned Support', value=8),
     ])
     async def reset(self, interaction: discord.Interaction, config: app_commands.Choice[int]) -> None:
         if config.value == 1:
@@ -44,6 +45,9 @@ class resetcmd(commands.Cog):
         elif config.value == 7:
             await dbsetlogchannel("Webstore Support", 0)
             await interaction.response.send_message(f"Webstore Support Log channel has been reset.", ephemeral=True)
+        elif config.value == 8:
+            await dbsetlogchannel("Rusturned Support", 0)
+            await interaction.response.send_message(f"Rusturned Support Log channel has been reset.", ephemeral=True)
 
     @reset.error
     async def reseterror(self, interaction: discord.Interaction, error: app_commands.AppCommandError):

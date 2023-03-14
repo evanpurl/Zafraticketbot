@@ -14,9 +14,11 @@ class setpfp(commands.Cog):
     @app_commands.command(name="setpfp", description="Command to set profile picture of bot.")
     @commands.has_permissions(manage_roles=True)
     async def setpfp(self, interaction: discord.Interaction, pfp: discord.Attachment) -> None:
-        fnames = (".png", ".jpg")
+        fnames = (".png", ".jpg", ".jpeg")
         try:
             if pfp.filename.endswith(fnames):
+                if not os.path.exists("pfps/"):
+                    os.mkdir("pfps/")
                 await pfp.save("pfps/" + pfp.filename)
                 await interaction.response.defer(ephemeral=True)
                 await asyncio.sleep(5)  # Lets the picture be saved before changing pfp

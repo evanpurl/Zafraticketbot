@@ -22,6 +22,19 @@ class setcmd(commands.GroupCog, name="set"):
             print(e)
             await interaction.response.send_message(content=f"""Something went wrong.""", ephemeral=True)
 
+    @app_commands.command(name="rusturned-support-log",
+                          description="Admin command to set the Rusturned Support log channel.")
+    @app_commands.checks.has_permissions(manage_channels=True)
+    async def rtsupportlog(self, interaction: discord.Interaction, channel: discord.TextChannel):
+        try:
+            await dbsetlogchannel("Rusturned Support", channel.id)
+            await interaction.response.send_message(
+                f"Your Rusturned Support log channel has been set to {channel.mention}.",
+                ephemeral=True)
+        except Exception as e:
+            print(e)
+            await interaction.response.send_message(content=f"""Something went wrong.""", ephemeral=True)
+
     @app_commands.command(name="rp-support-log",
                           description="Admin command to set the Roleplay Support log channel.")
     @app_commands.checks.has_permissions(manage_channels=True)
