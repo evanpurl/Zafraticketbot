@@ -9,21 +9,57 @@ from util.dbsetget import dbgetlogchannel
 
 timeout = 300  # seconds
 
-
 # Needs "manage role" perms
 # ticket-username-communitysupport
 
 rolelist = ['Community Moderator']
 
 
+def closemessageembed(bot, user, reason):
+    embed = discord.Embed(title=f"**Ticket Closed**",
+                          description=f"Ticket was closed by {user.mention}",
+                          color=discord.Color.blue(),
+                          timestamp=datetime.datetime.now())
+    embed.add_field(name="Reason", value=reason)
+    embed.set_author(name=bot.user.name, icon_url=bot.user.avatar)
+    return embed
+
+
+class closemodal(ui.Modal, title='Community Support Ticket Closure'):
+    reason = ui.TextInput(label='PLEASE GIVE A REASON FOR CLOSING THIS TICKET.', style=discord.TextStyle.paragraph,
+                          max_length=600)
+
+    async def on_submit(self, interaction: discord.Interaction):
+        lchanid = await dbgetlogchannel("Community Support")
+        logchannel = discord.utils.get(interaction.guild.channels,
+                                       id=lchanid[0])
+        if logchannel:
+            transcript = await chat_exporter.export(
+                interaction.channel,
+            )
+            if transcript is None:
+                return
+
+            transcript_file = discord.File(
+                io.BytesIO(transcript.encode()),
+                filename=f"transcript-{interaction.channel.name}.html",
+            )
+
+            await logchannel.send(content=closemessageembed(interaction.client, interaction.user, self.reason), file=transcript_file)
+
+        await interaction.channel.delete()
+
+
 def ticketembed():
-    embed = discord.Embed(description=f"When you are finished, click the close ticket button below.", color=discord.Color.blue(),
+    embed = discord.Embed(description=f"When you are finished, click the close ticket button below.",
+                          color=discord.Color.blue(),
                           timestamp=datetime.datetime.now())
     return embed
 
 
 class Ticketmodal(ui.Modal, title='Community Support Ticket'):
-    issue = ui.TextInput(label='PLEASE EXPLAIN WHAT THIS TICKET IS ABOUT:', style=discord.TextStyle.paragraph, max_length=300)
+    issue = ui.TextInput(label='PLEASE EXPLAIN WHAT THIS TICKET IS ABOUT:', style=discord.TextStyle.paragraph,
+                         max_length=300)
 
     async def on_submit(self, interaction: discord.Interaction):
         overwrites = {
@@ -128,26 +164,11 @@ class ticketbuttonpanel(discord.ui.View):
         super().__init__(timeout=None)
 
     @discord.ui.button(label="Close Ticket", emoji="🗑️", style=discord.ButtonStyle.red,
-                       custom_id="communitysupport:close")
+                       custom_id="communitysupport:close", disabled=True)
     async def close_button(self, interaction: discord.Interaction, button: discord.ui.Button):
         try:
-            lchanid = await dbgetlogchannel("Community Support")
-            logchannel = discord.utils.get(interaction.guild.channels,
-                                           id=lchanid[0])
-            if logchannel:
-                transcript = await chat_exporter.export(
-                    interaction.channel,
-                )
-                if transcript is None:
-                    return
-
-                transcript_file = discord.File(
-                    io.BytesIO(transcript.encode()),
-                    filename=f"transcript-{interaction.channel.name}.html",
-                )
-
-                await logchannel.send(file=transcript_file)
-            await interaction.channel.delete()
+            if any(role.name in rolelist for role in interaction.user.roles):
+                await interaction.response.send_modal(closemodal())
         except Exception as e:
             print(e)
 
@@ -158,6 +179,8 @@ class ticketbuttonpanel(discord.ui.View):
 
             if any(role.name in rolelist for role in interaction.user.roles):
                 button.disabled = True
+                self.close_button.disabled = False
+                self.auto_close_button.disabled = False
                 await interaction.response.send_message(
                     content=f"Ticket has been claimed by {interaction.user.mention}")
                 await interaction.message.edit(view=self)
@@ -168,10 +191,10 @@ class ticketbuttonpanel(discord.ui.View):
 
     @commands.has_permissions(manage_channels=True)
     @discord.ui.button(label="Auto-Close Ticket", emoji="⏲️", style=discord.ButtonStyle.gray,
-                       custom_id="communitysupport:autoclose")
+                       custom_id="communitysupport:autoclose", disabled=True)
     async def auto_close_button(self, interaction: discord.Interaction, button: discord.ui.Button):
         try:
-            if interaction.user.guild_permissions.manage_channels:
+            if any(role.name in rolelist for role in interaction.user.roles):
                 await interaction.response.send_message(content="Timer started.", ephemeral=True)
 
                 def check(m: discord.Message):  # m = discord.Message.
@@ -181,24 +204,7 @@ class ticketbuttonpanel(discord.ui.View):
                     while True:
                         msg = await interaction.client.wait_for('message', check=check, timeout=timeout)
                 except asyncio.TimeoutError:
-                    lchanid = await dbgetlogchannel("Community Support")
-                    logchannel = discord.utils.get(interaction.guild.channels,
-                                                   id=lchanid[0])
-                    if logchannel:
-                        transcript = await chat_exporter.export(
-                            interaction.channel,
-                        )
-                        if transcript is None:
-                            return
-
-                        transcript_file = discord.File(
-                            io.BytesIO(transcript.encode()),
-                            filename=f"transcript-{interaction.channel.name}.html",
-                        )
-
-                        await logchannel.send(file=transcript_file)
-                    await interaction.channel.delete()
-                    return
+                    await interaction.response.send_modal(closemodal())
             else:
                 await interaction.response.send_message(content="You don't have permission to do that.", ephemeral=True)
         except Exception as e:
@@ -241,7 +247,7 @@ class csticketcmd(commands.Cog):
 
     @commands.has_permissions(manage_roles=True)
     @app_commands.command(name="community-support-ticket", description="Command used by admin to create the Community "
-                                                                     "Support ticket message.")
+                                                                       "Support ticket message.")
     async def csticket(self, interaction: discord.Interaction) -> None:
         try:
             await interaction.response.send_message(embed=ticketmessageembed(self.bot), view=ticketbutton())
