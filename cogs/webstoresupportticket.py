@@ -102,11 +102,7 @@ class Ticketmodal(ui.Modal, title='Webstore Support Ticket'):
             ticketchan = await interaction.guild.create_text_channel(
                 f"ticket-{interaction.user.name}-webstoresupport", category=ticketcat,
                 overwrites=overwrites)
-            overwrite = discord.PermissionOverwrite()
-            overwrite.send_messages = False
-            for role in rolelist:
-                await ticketchan.set_permissions(discord.utils.get(interaction.guild.roles, name=role),
-                                                 overwrite=overwrite)
+
             await interaction.response.send_message(content=f"Ticket created in {ticketchan.mention}!",
                                                     ephemeral=True)
             await ticketchan.send(
@@ -117,6 +113,11 @@ class Ticketmodal(ui.Modal, title='Webstore Support Ticket'):
                         f'\nIf you do not respond in 5 minutes, this ticket will automatically close.'
                         f'\n\nIf you have any extra evidence to add, please send it now.', embed=ticketembed(),
                 view=ticketbuttonpanel())
+            overwrite = discord.PermissionOverwrite()
+            overwrite.send_messages = False
+            for role in rolelist:
+                await ticketchan.set_permissions(discord.utils.get(interaction.guild.roles, name=role),
+                                                 overwrite=overwrite)
 
             def check(m: discord.Message):  # m = discord.Message.
                 return m.author.id == interaction.user.id and m.channel.id == ticketchan.id
@@ -146,11 +147,7 @@ class Ticketmodal(ui.Modal, title='Webstore Support Ticket'):
         else:
             ticketchan = await interaction.guild.create_text_channel(
                 f"ticket-{interaction.user.name}-webstoresupport", overwrites=overwrites)
-            overwrite = discord.PermissionOverwrite()
-            overwrite.send_messages = False
-            for role in rolelist:
-                await ticketchan.set_permissions(discord.utils.get(interaction.guild.roles, name=role),
-                                                 overwrite=overwrite)
+
             await interaction.response.send_message(content=f"Ticket created in {ticketchan.mention}!",
                                                     ephemeral=True)
             await ticketchan.send(
@@ -161,6 +158,11 @@ class Ticketmodal(ui.Modal, title='Webstore Support Ticket'):
                         f'\nIf you do not respond in 5 minutes, this ticket will automatically close.'
                         f'\n\nIf you have any extra evidence to add, please send it now.', embed=ticketembed(),
                 view=ticketbuttonpanel())
+            overwrite = discord.PermissionOverwrite()
+            overwrite.send_messages = False
+            for role in rolelist:
+                await ticketchan.set_permissions(discord.utils.get(interaction.guild.roles, name=role),
+                                                 overwrite=overwrite)
 
             def check(m: discord.Message):  # m = discord.Message.
                 return m.author.id == interaction.user.id and m.channel.id == ticketchan.id
