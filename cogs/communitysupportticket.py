@@ -30,6 +30,7 @@ class closemodal(ui.Modal, title='Community Support Ticket Closure'):
                           max_length=600)
 
     async def on_submit(self, interaction: discord.Interaction):
+        await interaction.response.send_message(content="Closing reason sent.")
         lchanid = await dbgetlogchannel("Community Support")
         logchannel = discord.utils.get(interaction.guild.channels,
                                        id=lchanid[0])
