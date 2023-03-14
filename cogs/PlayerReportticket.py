@@ -220,7 +220,7 @@ class ticketbutton(discord.ui.View):
 
 def ticketmessageembed(bot):
     embed = discord.Embed(title="**Player Report Tickets**",
-                          description=f"Blah blah, this will have something in it at some point.",
+                          description=f"Do you need assistance? If so, click the button below!",
                           color=discord.Color.blue(),
                           timestamp=datetime.datetime.now())
     embed.set_author(name=bot.user.name, icon_url=bot.user.avatar)
