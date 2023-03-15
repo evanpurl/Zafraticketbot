@@ -1,11 +1,11 @@
 import asyncio
-import datetime
 import io
 import chat_exporter
 import discord
 from discord import app_commands, ui
 from discord.ext import commands
 from util.dbsetget import dbgetlogchannel
+from util.ticketutils import ticketmessageembed, autoclosemodal, closemodal, ticketembed
 
 timeout = 300  # seconds
 
@@ -15,74 +15,6 @@ timeout = 300  # seconds
 
 
 rolelist = ['Community Moderator']
-
-
-def closemessageembed(bot, user, reason):
-    embed = discord.Embed(title=f"**Ticket Closed**",
-                          description=f"Ticket was closed by {user.mention}",
-                          color=discord.Color.blue(),
-                          timestamp=datetime.datetime.now())
-    embed.add_field(name="Reason", value=reason)
-    embed.set_author(name=bot.user.name, icon_url=bot.user.avatar)
-    return embed
-
-
-class closemodal(ui.Modal, title='Webstore Support Ticket Closure'):
-    reason = ui.TextInput(label='PLEASE GIVE A REASON FOR CLOSING THIS TICKET.', style=discord.TextStyle.paragraph,
-                          max_length=600)
-
-    async def on_submit(self, interaction: discord.Interaction):
-        await interaction.response.send_message(content="Closing reason sent.")
-        lchanid = await dbgetlogchannel("Webstore Support")
-        logchannel = discord.utils.get(interaction.guild.channels,
-                                       id=lchanid[0])
-        if logchannel:
-            transcript = await chat_exporter.export(
-                interaction.channel,
-            )
-            if transcript is None:
-                return
-
-            transcript_file = discord.File(
-                io.BytesIO(transcript.encode()),
-                filename=f"transcript-{interaction.channel.name}.html",
-            )
-
-            await logchannel.send(embed=closemessageembed(interaction.client, interaction.user, self.reason),
-                                  file=transcript_file)
-
-        await interaction.channel.delete()
-
-
-class autoclosemodal(ui.Modal, title='Webstore Support Ticket Closure'):
-    reason = ui.TextInput(label='PLEASE GIVE A REASON FOR CLOSING THIS TICKET.', style=discord.TextStyle.paragraph,
-                          max_length=600)
-
-    async def on_submit(self, interaction: discord.Interaction):
-        await interaction.response.send_message(content="Closing reason sent.")
-        lchanid = await dbgetlogchannel("Webstore Support")
-        logchannel = discord.utils.get(interaction.guild.channels,
-                                       id=lchanid[0])
-        if logchannel:
-            transcript = await chat_exporter.export(
-                interaction.channel,
-            )
-            if transcript is None:
-                return
-
-            transcript_file = discord.File(
-                io.BytesIO(transcript.encode()),
-                filename=f"transcript-{interaction.channel.name}.html",
-            )
-
-            await logchannel.send(embed=closemessageembed(interaction.client, interaction.user, self.reason),
-                                  file=transcript_file)
-
-
-def ticketembed():
-    embed = discord.Embed(description=f"When you are finished, click the close ticket button below.", color=discord.Color.blue(),
-                          timestamp=datetime.datetime.now())
-    return embed
 
 
 class Ticketmodal(ui.Modal, title='Webstore Support Ticket'):
@@ -199,7 +131,7 @@ class ticketbuttonpanel(discord.ui.View):
     async def close_button(self, interaction: discord.Interaction, button: discord.ui.Button):
         try:
             if any(role.name in rolelist for role in interaction.user.roles):
-                await interaction.response.send_modal(closemodal())
+                await interaction.response.send_modal(closemodal(tickettype="Webstore Support"))
         except Exception as e:
             print(e)
 
@@ -228,7 +160,7 @@ class ticketbuttonpanel(discord.ui.View):
     async def auto_close_button(self, interaction: discord.Interaction, button: discord.ui.Button):
         try:
             if any(role.name in rolelist for role in interaction.user.roles):
-                await interaction.response.send_modal(autoclosemodal())
+                await interaction.response.send_modal(autoclosemodal(tickettype="Webstore Support"))
                 await interaction.response.send_message(content="Timer started.", ephemeral=True)
 
                 def check(m: discord.Message):  # m = discord.Message.
@@ -267,15 +199,6 @@ class ticketbutton(discord.ui.View):
             print(e)
 
 
-def ticketmessageembed(bot):
-    embed = discord.Embed(title="**Webstore Support Tickets**",
-                          description=f"Do you need assistance? If so, click the button below!",
-                          color=discord.Color.blue(),
-                          timestamp=datetime.datetime.now())
-    embed.set_author(name=bot.user.name, icon_url=bot.user.avatar)
-    return embed
-
-
 class websticketcmd(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -285,7 +208,7 @@ class websticketcmd(commands.Cog):
                                                                       "Webstore support ticket message.")
     async def csticket(self, interaction: discord.Interaction) -> None:
         try:
-            await interaction.response.send_message(embed=ticketmessageembed(self.bot), view=ticketbutton())
+            await interaction.response.send_message(embed=ticketmessageembed(self.bot, tickettype="Webstore Support"), view=ticketbutton())
         except Exception as e:
             print(e)
 

@@ -8,6 +8,13 @@ from discord import ui
 from util.dbsetget import dbgetlogchannel
 
 
+def ticketembed():
+    embed = discord.Embed(description=f"When you are finished, click the close ticket button below.",
+                          color=discord.Color.blue(),
+                          timestamp=datetime.datetime.now())
+    return embed
+
+
 def ticketmessageembed(bot, tickettype):
     embed = discord.Embed(title=f"**{tickettype} Tickets**",
                           description=f"Do you need assistance? If so, click the button below!",
@@ -52,15 +59,17 @@ class closemodal(ui.Modal, title='Ticket Closure Modal'):
                 filename=f"transcript-{interaction.channel.name}.html",
             )
 
-            await logchannel.send(embed=closemessageembed(interaction.client, interaction.user, self.reason), file=transcript_file)
+            await logchannel.send(embed=closemessageembed(interaction.client, interaction.user, self.reason),
+                                  file=transcript_file)
 
         await interaction.channel.delete()
 
 
-class autoclosemodal(ui.Modal, title='Player Report Ticket Closure'):
+class autoclosemodal(ui.Modal, title='Ticket Closure Modal'):
     def __init__(self, tickettype):
         super().__init__()
         self.ticket = tickettype
+
     reason = ui.TextInput(label='PLEASE GIVE A REASON FOR CLOSING THIS TICKET.', style=discord.TextStyle.paragraph,
                           max_length=600)
 
@@ -81,4 +90,5 @@ class autoclosemodal(ui.Modal, title='Player Report Ticket Closure'):
                 filename=f"transcript-{interaction.channel.name}.html",
             )
 
-            await logchannel.send(embed=closemessageembed(interaction.client, interaction.user, self.reason), file=transcript_file)
+            await logchannel.send(embed=closemessageembed(interaction.client, interaction.user, self.reason),
+                                  file=transcript_file)

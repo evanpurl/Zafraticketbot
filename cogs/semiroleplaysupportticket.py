@@ -1,11 +1,11 @@
 import asyncio
-import datetime
 import io
 import chat_exporter
 import discord
 from discord import app_commands, ui
 from discord.ext import commands
 from util.dbsetget import dbgetlogchannel
+from util.ticketutils import ticketembed, closemodal, autoclosemodal, ticketmessageembed
 
 timeout = 300  # seconds
 
@@ -15,74 +15,6 @@ timeout = 300  # seconds
 rolelist = ['SRP Junior Moderator', 'SRP Moderator', 'SRP Senior Moderator', 'SRP Administrator', 'SRP '
                                                                                                   'Staff '
                                                                                                   'Manager']
-
-
-def closemessageembed(bot, user, reason):
-    embed = discord.Embed(title=f"**Ticket Closed**",
-                          description=f"Ticket was closed by {user.mention}",
-                          color=discord.Color.blue(),
-                          timestamp=datetime.datetime.now())
-    embed.add_field(name="Reason", value=reason)
-    embed.set_author(name=bot.user.name, icon_url=bot.user.avatar)
-    return embed
-
-
-class closemodal(ui.Modal, title='Semi-Roleplay Ticket Closure'):
-    reason = ui.TextInput(label='PLEASE GIVE A REASON FOR CLOSING THIS TICKET.', style=discord.TextStyle.paragraph,
-                          max_length=600)
-
-    async def on_submit(self, interaction: discord.Interaction):
-        await interaction.response.send_message(content="Closing reason sent.")
-        lchanid = await dbgetlogchannel("Semi-Roleplay Support")
-        logchannel = discord.utils.get(interaction.guild.channels,
-                                       id=lchanid[0])
-        if logchannel:
-            transcript = await chat_exporter.export(
-                interaction.channel,
-            )
-            if transcript is None:
-                return
-
-            transcript_file = discord.File(
-                io.BytesIO(transcript.encode()),
-                filename=f"transcript-{interaction.channel.name}.html",
-            )
-
-            await logchannel.send(embed=closemessageembed(interaction.client, interaction.user, self.reason), file=transcript_file)
-
-        await interaction.channel.delete()
-
-
-class autoclosemodal(ui.Modal, title='Semi-Roleplay Support Ticket Closure'):
-    reason = ui.TextInput(label='PLEASE GIVE A REASON FOR CLOSING THIS TICKET.', style=discord.TextStyle.paragraph,
-                          max_length=600)
-
-    async def on_submit(self, interaction: discord.Interaction):
-        await interaction.response.send_message(content="Closing reason sent.")
-        lchanid = await dbgetlogchannel("Semi-Roleplay Support")
-        logchannel = discord.utils.get(interaction.guild.channels,
-                                       id=lchanid[0])
-        if logchannel:
-            transcript = await chat_exporter.export(
-                interaction.channel,
-            )
-            if transcript is None:
-                return
-
-            transcript_file = discord.File(
-                io.BytesIO(transcript.encode()),
-                filename=f"transcript-{interaction.channel.name}.html",
-            )
-
-            await logchannel.send(embed=closemessageembed(interaction.client, interaction.user, self.reason), file=transcript_file)
-
-
-
-def ticketembed():
-    embed = discord.Embed(description=f"When you are finished, click the close ticket button below.",
-                          color=discord.Color.blue(),
-                          timestamp=datetime.datetime.now())
-    return embed
 
 
 class Ticketmodal(ui.Modal, title='Semi-Roleplay Support Ticket'):
@@ -198,7 +130,7 @@ class ticketbuttonpanel(discord.ui.View):
     async def close_button(self, interaction: discord.Interaction, button: discord.ui.Button):
         try:
             if any(role.name in rolelist for role in interaction.user.roles):
-                await interaction.response.send_modal(closemodal())
+                await interaction.response.send_modal(closemodal(tickettype="Semi-Roleplay Support"))
         except Exception as e:
             print(e)
 
@@ -224,7 +156,7 @@ class ticketbuttonpanel(discord.ui.View):
     async def auto_close_button(self, interaction: discord.Interaction, button: discord.ui.Button):
         try:
             if any(role.name in rolelist for role in interaction.user.roles):
-                await interaction.response.send_modal(autoclosemodal())
+                await interaction.response.send_modal(autoclosemodal(tickettype="Semi-Roleplay Support"))
                 await interaction.response.send_message(content="Timer started.", ephemeral=True)
 
                 def check(m: discord.Message):  # m = discord.Message.
@@ -263,15 +195,6 @@ class ticketbutton(discord.ui.View):
             print(e)
 
 
-def ticketmessageembed(bot):
-    embed = discord.Embed(title="**Semi-Roleplay Support Tickets**",
-                          description=f"Do you need assistance? If so, click the button below!",
-                          color=discord.Color.blue(),
-                          timestamp=datetime.datetime.now())
-    embed.set_author(name=bot.user.name, icon_url=bot.user.avatar)
-    return embed
-
-
 class semirpticketcmd(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -281,7 +204,7 @@ class semirpticketcmd(commands.Cog):
                                                                            "Semi-Roleplay support ticket message.")
     async def csticket(self, interaction: discord.Interaction) -> None:
         try:
-            await interaction.response.send_message(embed=ticketmessageembed(self.bot), view=ticketbutton())
+            await interaction.response.send_message(embed=ticketmessageembed(self.bot, tickettype="Semi-Roleplay Support"), view=ticketbutton())
         except Exception as e:
             print(e)
 

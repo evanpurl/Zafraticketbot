@@ -1,12 +1,11 @@
 import asyncio
-import datetime
 import io
 import chat_exporter
 import discord
 from discord import app_commands, ui
 from discord.ext import commands
 from util.dbsetget import dbgetlogchannel
-from util.ticketutils import closemodal, autoclosemodal, ticketmessageembed
+from util.ticketutils import closemodal, autoclosemodal, ticketmessageembed, ticketembed
 
 timeout = 300  # seconds
 
@@ -17,13 +16,6 @@ timeout = 300  # seconds
 rolelist = ['SRP Senior Moderator', 'SRP Administrator', 'SRP Staff Manager', 'SV Senior Moderator', 'SV Administrator',
             'SV Staff Manager', 'RP Senior Moderator', 'RP Administrator', 'RP Staff Manager', 'RT Senior Moderator',
             'RT Administrator', 'RT Staff Manager']
-
-
-def ticketembed():
-    embed = discord.Embed(description=f"When you are finished, click the close ticket button below.",
-                          color=discord.Color.blue(),
-                          timestamp=datetime.datetime.now())
-    return embed
 
 
 class Ticketmodal(ui.Modal, title='Player Report Ticket'):
