@@ -43,26 +43,29 @@ class closemodal(ui.Modal, title='Ticket Closure Modal'):
                           max_length=600)
 
     async def on_submit(self, interaction: discord.Interaction):
-        await interaction.response.send_message(content="Closing reason sent.")
-        lchanid = await dbgetlogchannel(self.ticket)
-        logchannel = discord.utils.get(interaction.guild.channels,
-                                       id=lchanid[0])
-        if logchannel:
-            transcript = await chat_exporter.export(
-                interaction.channel,
-            )
-            if transcript is None:
-                return
+        try:
+            await interaction.response.send_message(content="Closing reason sent.")
+            lchanid = await dbgetlogchannel(self.ticket)
+            logchannel = discord.utils.get(interaction.guild.channels,
+                                           id=lchanid[0])
+            if logchannel:
+                transcript = await chat_exporter.export(
+                    interaction.channel,
+                )
+                if transcript is None:
+                    return
 
-            transcript_file = discord.File(
-                io.BytesIO(transcript.encode()),
-                filename=f"transcript-{interaction.channel.name}.html",
-            )
+                transcript_file = discord.File(
+                    io.BytesIO(transcript.encode()),
+                    filename=f"transcript-{interaction.channel.name}.html",
+                )
 
-            await logchannel.send(embed=closemessageembed(interaction.client, interaction.user, self.reason),
-                                  file=transcript_file)
+                await logchannel.send(embed=closemessageembed(interaction.client, interaction.user, self.reason),
+                                      file=transcript_file)
 
-        await interaction.channel.delete()
+            await interaction.channel.delete()
+        except Exception as e:
+            print(e)
 
 
 class autoclosemodal(ui.Modal, title='Ticket Closure Modal'):
@@ -74,21 +77,24 @@ class autoclosemodal(ui.Modal, title='Ticket Closure Modal'):
                           max_length=600)
 
     async def on_submit(self, interaction: discord.Interaction):
-        await interaction.response.send_message(content="Closing reason sent.")
-        lchanid = await dbgetlogchannel(self.ticket)
-        logchannel = discord.utils.get(interaction.guild.channels,
-                                       id=lchanid[0])
-        if logchannel:
-            transcript = await chat_exporter.export(
-                interaction.channel,
-            )
-            if transcript is None:
-                return
+        try:
+            await interaction.response.send_message(content="Closing reason sent.")
+            lchanid = await dbgetlogchannel(self.ticket)
+            logchannel = discord.utils.get(interaction.guild.channels,
+                                           id=lchanid[0])
+            if logchannel:
+                transcript = await chat_exporter.export(
+                    interaction.channel,
+                )
+                if transcript is None:
+                    return
 
-            transcript_file = discord.File(
-                io.BytesIO(transcript.encode()),
-                filename=f"transcript-{interaction.channel.name}.html",
-            )
+                transcript_file = discord.File(
+                    io.BytesIO(transcript.encode()),
+                    filename=f"transcript-{interaction.channel.name}.html",
+                )
 
-            await logchannel.send(embed=closemessageembed(interaction.client, interaction.user, self.reason),
-                                  file=transcript_file)
+                await logchannel.send(embed=closemessageembed(interaction.client, interaction.user, self.reason),
+                                      file=transcript_file)
+        except Exception as e:
+            print(e)
