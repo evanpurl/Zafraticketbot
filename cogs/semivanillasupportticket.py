@@ -129,7 +129,7 @@ class ticketbuttonpanel(discord.ui.View):
     async def close_button(self, interaction: discord.Interaction, button: discord.ui.Button):
         try:
             if any(role.name in rolelist for role in interaction.user.roles):
-                await interaction.response.send_modal(closemodal(tickettype="Semi-Vanilla-Support"))
+                await interaction.response.send_modal(closemodal(tickettype="Semi-Vanilla Support"))
         except Exception as e:
             print(e)
 
@@ -158,7 +158,7 @@ class ticketbuttonpanel(discord.ui.View):
     async def auto_close_button(self, interaction: discord.Interaction, button: discord.ui.Button):
         try:
             if any(role.name in rolelist for role in interaction.user.roles):
-                await interaction.response.send_modal(autoclosemodal(tickettype="Semi-Vanilla-Support"))
+                await interaction.response.send_modal(autoclosemodal(tickettype="Semi-Vanilla Support"))
                 await interaction.response.send_message(content="Timer started.", ephemeral=True)
 
                 def check(m: discord.Message):  # m = discord.Message.
