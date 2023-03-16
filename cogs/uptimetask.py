@@ -5,6 +5,8 @@ from discord.ext import commands, tasks
 # Needs manage messages permission
 
 starttime = 0.0
+
+
 class uptimetask(commands.Cog):
 
     def __init__(self, bot):
@@ -21,11 +23,14 @@ class uptimetask(commands.Cog):
     @tasks.loop(minutes=1)
     async def status_message(self):
         try:
+            guild = await self.bot.get_guild(1071733132853792830)
+            category = discord.utils.get(guild.categories,
+                                         id=1084985136715673700)
+
             await self.bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching,
-                                                                   name=f"{datetime.timedelta(seconds=round(time.time() - starttime))}"))
+                                                                     name=f"over {len(category.channels)} ticket(s)."))
         except Exception as e:
             print(e)
-
 
 
 async def setup(bot):
