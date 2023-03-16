@@ -23,7 +23,7 @@ class uptimetask(commands.Cog):
     @tasks.loop(minutes=1)
     async def status_message(self):
         try:
-            guild = await self.bot.get_guild(1071733132853792830)
+            guild = self.bot.get_guild(1071733132853792830)
             category = discord.utils.get(guild.categories,
                                          id=1084985136715673700)
 
