@@ -76,7 +76,7 @@ class Ticketmodal(ui.Modal, title='Player Report Ticket'):
                     )
 
                     await logchannel.send(
-                        embed=closemessageembed(interaction.client, interaction.user,
+                        embed=closemessageembed(interaction.client, interaction.client.user.mention,
                                                 "Ticket was closed due to inactivity."),
                         file=transcript_file)
 
@@ -124,7 +124,7 @@ class Ticketmodal(ui.Modal, title='Player Report Ticket'):
                     )
 
                     await logchannel.send(
-                        embed=closemessageembed(interaction.client, interaction.user,
+                        embed=closemessageembed(interaction.client, interaction.client.user.mention,
                                                 "Ticket was closed due to inactivity."),
                         file=transcript_file)
                 await ticketchan.delete()
