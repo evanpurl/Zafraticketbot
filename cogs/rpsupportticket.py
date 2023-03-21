@@ -5,7 +5,7 @@ import discord
 from discord import app_commands, ui
 from discord.ext import commands
 from util.dbsetget import dbgetlogchannel
-from util.ticketutils import ticketembed, closemodal, autoclosemodal, ticketmessageembed
+from util.ticketutils import ticketembed, closemodal, autoclosemodal, ticketmessageembed, closemessageembed
 
 timeout = 300  # seconds
 
@@ -56,7 +56,7 @@ class Ticketmodal(ui.Modal, title='Roleplay Support Ticket'):
             try:
                 msg = await interaction.client.wait_for('message', check=check, timeout=timeout)
             except asyncio.TimeoutError:
-                lchanid = await dbgetlogchannel("RP Support")
+                lchanid = await dbgetlogchannel("Roleplay Support")
                 logchannel = discord.utils.get(interaction.guild.channels,
                                                id=lchanid[0])
                 if logchannel:
@@ -71,7 +71,10 @@ class Ticketmodal(ui.Modal, title='Roleplay Support Ticket'):
                         filename=f"transcript-{ticketchan.name}.html",
                     )
 
-                    await logchannel.send(file=transcript_file)
+                    await logchannel.send(
+                        embed=closemessageembed(interaction.client, interaction.user,
+                                                "Ticket was closed due to inactivity."),
+                        file=transcript_file)
 
                 await ticketchan.delete()
 
@@ -100,7 +103,7 @@ class Ticketmodal(ui.Modal, title='Roleplay Support Ticket'):
             try:
                 msg = await interaction.client.wait_for('message', check=check, timeout=timeout)
             except asyncio.TimeoutError:
-                lchanid = await dbgetlogchannel("RP Support")
+                lchanid = await dbgetlogchannel("Roleplay Support")
                 logchannel = discord.utils.get(interaction.guild.channels,
                                                id=lchanid[0])
                 if logchannel:
@@ -115,7 +118,10 @@ class Ticketmodal(ui.Modal, title='Roleplay Support Ticket'):
                         filename=f"transcript-{ticketchan.name}.html",
                     )
 
-                    await logchannel.send(file=transcript_file)
+                    await logchannel.send(
+                        embed=closemessageembed(interaction.client, interaction.user,
+                                                "Ticket was closed due to inactivity."),
+                        file=transcript_file)
                 await ticketchan.delete()
 
 
@@ -203,7 +209,8 @@ class rpticketcmd(commands.Cog):
                                                                       "Support ticket message.")
     async def csticket(self, interaction: discord.Interaction) -> None:
         try:
-            await interaction.response.send_message(embed=ticketmessageembed(self.bot, tickettype="Roleplay Support"), view=ticketbutton())
+            await interaction.response.send_message(embed=ticketmessageembed(self.bot, tickettype="Roleplay Support"),
+                                                    view=ticketbutton())
         except Exception as e:
             print(e)
 

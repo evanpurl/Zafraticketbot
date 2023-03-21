@@ -5,7 +5,7 @@ import discord
 from discord import app_commands, ui
 from discord.ext import commands
 from util.dbsetget import dbgetlogchannel
-from util.ticketutils import ticketmessageembed, ticketembed, closemodal, autoclosemodal
+from util.ticketutils import ticketmessageembed, ticketembed, closemodal, autoclosemodal, closemessageembed
 
 timeout = 300  # seconds
 
@@ -70,7 +70,10 @@ class Ticketmodal(ui.Modal, title='Semi-Vanilla Support Ticket'):
                         filename=f"transcript-{ticketchan.name}.html",
                     )
 
-                    await logchannel.send(file=transcript_file)
+                    await logchannel.send(
+                        embed=closemessageembed(interaction.client, interaction.user,
+                                                "Ticket was closed due to inactivity."),
+                        file=transcript_file)
 
                 await ticketchan.delete()
 
@@ -115,7 +118,11 @@ class Ticketmodal(ui.Modal, title='Semi-Vanilla Support Ticket'):
                         filename=f"transcript-{ticketchan.name}.html",
                     )
 
-                    await logchannel.send(file=transcript_file)
+                    await logchannel.send(
+                        embed=closemessageembed(interaction.client, interaction.user,
+                                                "Ticket was closed due to inactivity."),
+                        file=transcript_file)
+
                 await ticketchan.delete()
 
 
@@ -206,7 +213,8 @@ class semvticketcmd(commands.Cog):
                                                                           "Semi-Vanilla support ticket message.")
     async def csticket(self, interaction: discord.Interaction) -> None:
         try:
-            await interaction.response.send_message(embed=ticketmessageembed(self.bot, tickettype="Semi-Vanilla Support"), view=ticketbutton())
+            await interaction.response.send_message(
+                embed=ticketmessageembed(self.bot, tickettype="Semi-Vanilla Support"), view=ticketbutton())
         except Exception as e:
             print(e)
 

@@ -3,7 +3,7 @@ from aiohttp import web
 from discord.ext import commands
 
 host = '0.0.0.0'
-port = 25565
+port = 25567
 
 
 class ServerCog(commands.Cog):

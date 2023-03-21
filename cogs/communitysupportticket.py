@@ -5,7 +5,7 @@ import discord
 from discord import app_commands, ui
 from discord.ext import commands
 from util.dbsetget import dbgetlogchannel
-from util.ticketutils import ticketmessageembed, ticketembed, closemodal, autoclosemodal
+from util.ticketutils import ticketmessageembed, ticketembed, closemodal, autoclosemodal, closemessageembed
 
 timeout = 300  # seconds
 
@@ -67,7 +67,10 @@ class Ticketmodal(ui.Modal, title='Community Support Ticket'):
                         filename=f"transcript-{ticketchan.name}.html",
                     )
 
-                    await logchannel.send(file=transcript_file)
+                    await logchannel.send(
+                        embed=closemessageembed(interaction.client, interaction.user,
+                                                "Ticket was closed due to inactivity."),
+                        file=transcript_file)
 
                 await ticketchan.delete()
 
@@ -112,7 +115,10 @@ class Ticketmodal(ui.Modal, title='Community Support Ticket'):
                         filename=f"transcript-{ticketchan.name}.html",
                     )
 
-                    await logchannel.send(file=transcript_file)
+                    await logchannel.send(
+                        embed=closemessageembed(interaction.client, interaction.user,
+                                                "Ticket was closed due to inactivity."),
+                        file=transcript_file)
                 await ticketchan.delete()
 
 
