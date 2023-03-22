@@ -15,7 +15,7 @@ timeout = 300  # seconds
 
 rolelist = ['SRP Senior Moderator', 'SRP Administrator', 'SRP Staff Manager', 'SV Senior Moderator', 'SV Administrator',
             'SV Staff Manager', 'RP Senior Moderator', 'RP Administrator', 'RP Staff Manager', 'RT Senior Moderator',
-            'RT Administrator', 'RT Staff Manager']
+            'RT Administrator', 'RT Staff Manager', 'Support Team']
 
 
 class Ticketmodal(ui.Modal, title='Player Report Ticket'):

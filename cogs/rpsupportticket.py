@@ -15,7 +15,7 @@ timeout = 300  # seconds
 
 rolelist = ['RP Junior Moderator', 'RP Moderator', 'RP Senior Moderator', 'RP Administrator', 'RP '
                                                                                               'Staff '
-                                                                                              'Manager']
+                                                                                              'Manager', 'Support Team']
 
 
 class Ticketmodal(ui.Modal, title='Roleplay Support Ticket'):

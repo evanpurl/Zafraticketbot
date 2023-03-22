@@ -12,7 +12,7 @@ timeout = 300  # seconds
 # Needs "manage role" perms
 # ticket-username-communitysupport
 
-rolelist = ['Community Moderator']
+rolelist = ['Community Moderator', 'Support Team']
 
 
 class Ticketmodal(ui.Modal, title='Community Support Ticket'):

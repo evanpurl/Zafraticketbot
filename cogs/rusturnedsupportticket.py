@@ -14,7 +14,7 @@ timeout = 300  # seconds
 
 rolelist = ['RT Junior Moderator', 'RT Moderator', 'RT Senior Moderator', 'RT Administrator', 'RT '
                                                                                               'Staff '
-                                                                                              'Manager']
+                                                                                              'Manager', 'Support Team']
 
 
 class Ticketmodal(ui.Modal, title='Rusturned Support Ticket'):
