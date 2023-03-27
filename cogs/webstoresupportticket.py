@@ -137,7 +137,7 @@ class ticketbuttonpanel(discord.ui.View):
     async def close_button(self, interaction: discord.Interaction, button: discord.ui.Button):
         try:
             if any(role.name in rolelist for role in interaction.user.roles):
-                await interaction.response.send_modal(closemodal(tickettype="Webstore Support"))
+                await interaction.response.send_modal(closemodal(tickettype="webstoresupport"))
         except Exception as e:
             print(e)
 
@@ -210,7 +210,7 @@ class websticketcmd(commands.Cog):
         self.bot = bot
 
     @commands.has_permissions(manage_roles=True)
-    @app_commands.command(name=f"{tickettype}-ticket", description="Command used by admin to create the "
+    @app_commands.command(name=f"webstore-support-ticket", description="Command used by admin to create the "
                                                                    "Webstore support ticket message.")
     async def csticket(self, interaction: discord.Interaction) -> None:
         try:

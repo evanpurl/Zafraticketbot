@@ -3,6 +3,7 @@ from discord import app_commands
 from discord.ext import commands
 from discord.ext.commands.errors import MissingPermissions
 from util.dbsetget import dbsetlogchannel
+from util.ticketutils import setticketdata
 
 
 # Needs "manage role" perms
@@ -43,7 +44,7 @@ class resetcmd(commands.Cog):
             await dbsetlogchannel("Ban Appeal", 0)
             await interaction.response.send_message(f"Ban Appeal Log channel has been reset.", ephemeral=True)
         elif config.value == 7:
-            await dbsetlogchannel("Webstore Support", 0)
+            await setticketdata(guild=interaction.guild, tickettype="webstoresupport", file="log", data=0)
             await interaction.response.send_message(f"Webstore Support Log channel has been reset.", ephemeral=True)
         elif config.value == 8:
             await dbsetlogchannel("Rusturned Support", 0)

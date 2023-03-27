@@ -5,12 +5,15 @@ import discord
 from discord import app_commands, ui
 from discord.ext import commands
 from util.dbsetget import dbgetlogchannel
-from util.ticketutils import ticketmessageembed, ticketembed, closemodal, autoclosemodal, closemessageembed
+from util.ticketutils import ticketmessageembed, ticketembed, closemodal, autoclosemodal, closemessageembed, \
+    ticketdirectories
 
 timeout = 300  # seconds
 
 # Needs "manage role" perms
 # ticket-username-communitysupport
+
+tickettype = "communitysupport"
 
 rolelist = ['Community Moderator', 'Support Team']
 
@@ -27,7 +30,7 @@ class Ticketmodal(ui.Modal, title='Community Support Ticket'):
         ticketcat = discord.utils.get(interaction.guild.categories, name="𝙏𝙞𝙘𝙠𝙚𝙩𝙨")
         if ticketcat:
             ticketchan = await interaction.guild.create_text_channel(
-                f"ticket-{interaction.user.name}-communitysupport", category=ticketcat,
+                f"ticket-{interaction.user.name}-{tickettype}", category=ticketcat,
                 overwrites=overwrites)
             await interaction.response.send_message(content=f"Ticket created in {ticketchan.mention}!",
                                                     ephemeral=True)
@@ -76,7 +79,7 @@ class Ticketmodal(ui.Modal, title='Community Support Ticket'):
 
         else:
             ticketchan = await interaction.guild.create_text_channel(
-                f"ticket-{interaction.user.name}-communitysupport", overwrites=overwrites)
+                f"ticket-{interaction.user.name}-{tickettype}", overwrites=overwrites)
             await interaction.response.send_message(content=f"Ticket created in {ticketchan.mention}!",
                                                     ephemeral=True)
             await ticketchan.send(
@@ -128,7 +131,7 @@ class ticketbuttonpanel(discord.ui.View):
         super().__init__(timeout=None)
 
     @discord.ui.button(label="Close Ticket", emoji="🗑️", style=discord.ButtonStyle.red,
-                       custom_id="communitysupport:close", disabled=True)
+                       custom_id=f"{tickettype}:close", disabled=True)
     async def close_button(self, interaction: discord.Interaction, button: discord.ui.Button):
         try:
             if any(role.name in rolelist for role in interaction.user.roles):
@@ -137,7 +140,7 @@ class ticketbuttonpanel(discord.ui.View):
             print(e)
 
     @discord.ui.button(label="Claim Ticket", emoji="✅", style=discord.ButtonStyle.green,
-                       custom_id="communitysupport:claim")
+                       custom_id=f"{tickettype}:claim")
     async def claim_button(self, interaction: discord.Interaction, button: discord.ui.Button):
         try:
 
@@ -158,7 +161,7 @@ class ticketbuttonpanel(discord.ui.View):
 
     @commands.has_permissions(manage_channels=True)
     @discord.ui.button(label="Auto-Close Ticket", emoji="⏲️", style=discord.ButtonStyle.gray,
-                       custom_id="communitysupport:autoclose", disabled=True)
+                       custom_id=f"{tickettype}:autoclose", disabled=True)
     async def auto_close_button(self, interaction: discord.Interaction, button: discord.ui.Button):
         try:
             if any(role.name in rolelist for role in interaction.user.roles):
@@ -186,7 +189,7 @@ class ticketbutton(discord.ui.View):
         super().__init__(timeout=None)
 
     @discord.ui.button(label="Create Ticket", emoji="📨", style=discord.ButtonStyle.blurple,
-                       custom_id="communitysupportbutton")
+                       custom_id=f"{tickettype}button")
     async def gray_button(self, interaction: discord.Interaction, button: discord.ui.Button):
         try:
             existticket = discord.utils.get(interaction.guild.channels,
@@ -213,6 +216,12 @@ class csticketcmd(commands.Cog):
             await interaction.response.send_message(embed=ticketmessageembed(self.bot, "Community Support"), view=ticketbutton())
         except Exception as e:
             print(e)
+
+    @commands.Cog.listener()
+    async def on_ready(self):
+        await self.bot.wait_until_ready()
+        for guild in self.bot.guilds:
+            await ticketdirectories(guild=guild, tickettype=tickettype, file="log")
 
     @csticket.error
     async def onerror(self, interaction: discord.Interaction, error: app_commands.MissingPermissions):

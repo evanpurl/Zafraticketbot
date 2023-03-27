@@ -35,9 +35,10 @@ def closemessageembed(bot, user, reason):
 
 
 class closemodal(ui.Modal, title='Ticket Closure Modal'):
-    def __init__(self, tickettype):
+    def __init__(self, tickettype, file):
         super().__init__()
         self.ticket = tickettype
+        self.file = file
 
     reason = ui.TextInput(label='PLEASE GIVE A REASON FOR CLOSING THIS TICKET.', style=discord.TextStyle.paragraph,
                           max_length=600)
@@ -45,9 +46,9 @@ class closemodal(ui.Modal, title='Ticket Closure Modal'):
     async def on_submit(self, interaction: discord.Interaction):
         try:
             await interaction.response.send_message(content="Closing reason sent.")
-            lchanid = await dbgetlogchannel(self.ticket)
+            lchanid = await getticketdata(guild=interaction.guild, tickettype=self.ticket, file=self.file)
             logchannel = discord.utils.get(interaction.guild.channels,
-                                           id=lchanid[0])
+                                           id=lchanid)
             if logchannel:
                 transcript = await chat_exporter.export(
                     interaction.channel,
@@ -114,3 +115,21 @@ async def ticketdirectories(guild, tickettype, file):
         print(f"Files verified for type {tickettype} in server {guild.name}")
 
 
+async def getticketdata(guild, tickettype, file):
+    dirr = f"tickets/{guild.id}/{tickettype}/{file}.txt"
+    if os.path.exists(dirr):
+        with open(dirr, "r") as f:
+            data = f.readline()
+        return int(data)
+    else:
+        return 0
+
+
+async def setticketdata(guild, tickettype, file, data):
+    dirr = f"tickets/{guild.id}/{tickettype}/{file}.txt"
+    if os.path.exists(dirr):
+        with open(dirr, "w") as f:
+            f.write(str(data))
+        return 1
+    else:
+        return 0

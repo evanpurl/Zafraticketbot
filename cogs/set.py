@@ -3,6 +3,7 @@ from discord import app_commands
 from discord.ext import commands
 
 from util.dbsetget import dbsetlogchannel
+from util.ticketutils import setticketdata
 
 
 class setcmd(commands.GroupCog, name="set"):
@@ -105,7 +106,7 @@ class setcmd(commands.GroupCog, name="set"):
     @app_commands.checks.has_permissions(manage_channels=True)
     async def webstoresupportlog(self, interaction: discord.Interaction, channel: discord.TextChannel):
         try:
-            await dbsetlogchannel("Webstore Support", channel.id)
+            await setticketdata(guild=interaction.guild, tickettype="webstoresupport", file="log", data=channel.id)
             await interaction.response.send_message(
                 f"Your Webstore Support log channel has been set to {channel.mention}.",
                 ephemeral=True)
