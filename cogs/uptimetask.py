@@ -5,8 +5,6 @@ from util.ticketutils import getticketcat
 
 # Needs manage messages permission
 
-tickets = 0
-
 
 class uptimetask(commands.Cog):
 
@@ -22,11 +20,11 @@ class uptimetask(commands.Cog):
     @tasks.loop(minutes=1)
     async def status_message(self):
         try:
+            tickets = 0
             for guild in self.bot.guilds:
                 cat = await getticketcat(guild=guild)
                 category = discord.utils.get(guild.categories, id=cat)
                 if category:
-                    global tickets
                     tickets += len(category.channels)
 
             await self.bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching,
