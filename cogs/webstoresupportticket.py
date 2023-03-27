@@ -219,7 +219,8 @@ class websticketcmd(commands.Cog):
         except Exception as e:
             print(e)
 
-    async def cog_load(self):
+    @commands.Cog.listener()
+    async def on_ready(self):
         await self.bot.wait_until_ready()
         for guild in self.bot.guilds:
             await ticketdirectories(guild=guild, tickettype=tickettype, file="log")
