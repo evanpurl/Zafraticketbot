@@ -5,13 +5,14 @@ import discord
 from discord import app_commands, ui
 from discord.ext import commands
 from util.dbsetget import dbgetlogchannel
-from util.ticketutils import ticketmessageembed, autoclosemodal, closemodal, ticketembed, closemessageembed
+from util.ticketutils import ticketmessageembed, autoclosemodal, closemodal, ticketembed, closemessageembed, ticketdirectories
 
 timeout = 300  # seconds
 
 
 # Needs "manage role" perms
 # ticket-username-webstoresupport
+tickettype = "webstoresupport"
 
 
 rolelist = ['Community Moderator', 'Support Team']
@@ -32,7 +33,7 @@ class Ticketmodal(ui.Modal, title='Webstore Support Ticket'):
         ticketcat = discord.utils.get(interaction.guild.categories, name="𝙏𝙞𝙘𝙠𝙚𝙩𝙨")
         if ticketcat:
             ticketchan = await interaction.guild.create_text_channel(
-                f"ticket-{interaction.user.name}-webstoresupport", category=ticketcat,
+                f"ticket-{interaction.user.name}-{tickettype}", category=ticketcat,
                 overwrites=overwrites)
 
             await interaction.response.send_message(content=f"Ticket created in {ticketchan.mention}!",
@@ -133,7 +134,7 @@ class ticketbuttonpanel(discord.ui.View):
         super().__init__(timeout=None)
 
     @discord.ui.button(label="Close Ticket", emoji="🗑️", style=discord.ButtonStyle.red,
-                       custom_id="webstoresupport:close", disabled=True)
+                       custom_id=f"{tickettype}:close", disabled=True)
     async def close_button(self, interaction: discord.Interaction, button: discord.ui.Button):
         try:
             if any(role.name in rolelist for role in interaction.user.roles):
@@ -142,7 +143,7 @@ class ticketbuttonpanel(discord.ui.View):
             print(e)
 
     @discord.ui.button(label="Claim Ticket", emoji="✅", style=discord.ButtonStyle.green,
-                       custom_id="webstoresupport:claim")
+                       custom_id=f"{tickettype}:claim")
     async def claim_button(self, interaction: discord.Interaction, button: discord.ui.Button):
         try:
             if any(role.name in rolelist for role in interaction.user.roles):
@@ -162,7 +163,7 @@ class ticketbuttonpanel(discord.ui.View):
 
     @commands.has_permissions(manage_channels=True)
     @discord.ui.button(label="Auto-Close Ticket", emoji="⏲️", style=discord.ButtonStyle.gray,
-                       custom_id="webstoresupport:autoclose", disabled=True)
+                       custom_id=f"{tickettype}:autoclose", disabled=True)
     async def auto_close_button(self, interaction: discord.Interaction, button: discord.ui.Button):
         try:
             if any(role.name in rolelist for role in interaction.user.roles):
@@ -190,11 +191,11 @@ class ticketbutton(discord.ui.View):
         super().__init__(timeout=None)
 
     @discord.ui.button(label="Create Ticket", emoji="📨", style=discord.ButtonStyle.blurple,
-                       custom_id="webstoresupportbutton")
+                       custom_id=f"{tickettype}button")
     async def gray_button(self, interaction: discord.Interaction, button: discord.ui.Button):
         try:
             existticket = discord.utils.get(interaction.guild.channels,
-                                            name=f"ticket-{interaction.user.name.lower()}-webstoresupport")
+                                            name=f"ticket-{interaction.user.name.lower()}-{tickettype}")
             if existticket:
                 await interaction.response.send_message(
                     content=f"You already have an existing ticket you silly goose. {existticket.mention}",
@@ -209,8 +210,15 @@ class websticketcmd(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
+    async def cog_load(self):
+        try:
+            for guild in self.bot.guilds:
+                await ticketdirectories(guild=guild, tickettype=tickettype, file="log")
+        except Exception as e:
+            print(e)
+
     @commands.has_permissions(manage_roles=True)
-    @app_commands.command(name="webstore-support-ticket", description="Command used by admin to create the "
+    @app_commands.command(name=f"{tickettype}-ticket", description="Command used by admin to create the "
                                                                       "Webstore support ticket message.")
     async def csticket(self, interaction: discord.Interaction) -> None:
         try:

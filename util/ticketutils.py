@@ -1,6 +1,6 @@
 import datetime
 import io
-
+import os
 import chat_exporter
 import discord
 from discord import ui
@@ -98,3 +98,17 @@ class autoclosemodal(ui.Modal, title='Ticket Closure Modal'):
                                       file=transcript_file)
         except Exception as e:
             print(e)
+
+
+async def ticketdirectories(guild, tickettype, file):
+    """Used to verify ticket files for type tickettype in guild."""
+    print(f"Checking ticket directory for type {tickettype} in server {guild.name}")
+    dirr = f"tickets/{guild.id}/{tickettype}/{file}.txt"
+    if not os.path.exists(dirr):
+        print(f"{file} does not exist, creating!")
+        os.makedirs(dirr)
+        print(f"Created!")
+    else:
+        print(f"Files verified for type {tickettype} in server {guild.name}")
+
+
