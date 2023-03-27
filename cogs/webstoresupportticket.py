@@ -220,6 +220,7 @@ class websticketcmd(commands.Cog):
             print(e)
 
     async def cog_load(self):
+        print(self.bot.guilds)
         for guild in self.bot.guilds:
             ticketdirectories(guild=guild, tickettype=tickettype, file="log")
 
