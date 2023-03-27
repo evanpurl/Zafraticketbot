@@ -100,7 +100,7 @@ class autoclosemodal(ui.Modal, title='Ticket Closure Modal'):
             print(e)
 
 
-def ticketdirectories(guild, tickettype, file):
+async def ticketdirectories(guild, tickettype, file):
     """Used to verify ticket files for type tickettype in guild."""
     print(f"Checking ticket directory for type {tickettype} in server {guild.name}")
     dirr = f"tickets/{guild.id}/{tickettype}/{file}.txt"
