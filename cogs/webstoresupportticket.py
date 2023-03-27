@@ -221,7 +221,7 @@ class websticketcmd(commands.Cog):
 
     async def cog_load(self):
         for guild in self.bot.guilds:
-            await ticketdirectories(guild=guild, tickettype=tickettype, file="log")
+            ticketdirectories(guild=guild, tickettype=tickettype, file="log")
 
     @csticket.error
     async def onerror(self, interaction: discord.Interaction, error: app_commands.MissingPermissions):
