@@ -108,7 +108,7 @@ async def ticketdirectories(guild, tickettype, file):
         print(f"{file} does not exist, creating!")
         os.makedirs(os.path.dirname(dirr))
         with open(dirr, "w") as f:
-            pass
+            f.write(f"0")
         print(f"Created!")
     else:
         print(f"Files verified for type {tickettype} in server {guild.name}")
