@@ -220,6 +220,7 @@ class websticketcmd(commands.Cog):
             print(e)
 
     async def cog_load(self):
+        print(f"{self.__class__.__name__} loaded!")
         try:
             for guild in self.bot.guilds:
                 await ticketdirectories(guild=guild, tickettype=tickettype, file="log")
