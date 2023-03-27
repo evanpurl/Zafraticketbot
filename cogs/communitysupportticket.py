@@ -205,6 +205,16 @@ class csticketcmd(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
+    @commands.Cog.listener()
+    async def on_ready(self):
+        await self.bot.wait_until_ready()
+        for guild in self.bot.guilds:
+            await ticketdirectories(guild=guild, tickettype=tickettype, file="log")
+
+    @commands.Cog.listener()
+    async def on_guild_join(self, guild):
+        await ticketdirectories(guild=guild, tickettype=tickettype, file="log")
+
     @commands.has_permissions(manage_roles=True)
     @app_commands.command(name="community-support-ticket", description="Command used by admin to create the Community "
                                                                        "Support ticket message.")
@@ -214,11 +224,6 @@ class csticketcmd(commands.Cog):
         except Exception as e:
             print(e)
 
-    @commands.Cog.listener()
-    async def on_ready(self):
-        await self.bot.wait_until_ready()
-        for guild in self.bot.guilds:
-            await ticketdirectories(guild=guild, tickettype=tickettype, file="log")
 
     @csticket.error
     async def onerror(self, interaction: discord.Interaction, error: app_commands.MissingPermissions):

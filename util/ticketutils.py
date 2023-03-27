@@ -114,6 +114,14 @@ async def ticketdirectories(guild, tickettype, file):
         print(f"Files verified for type {tickettype} in server {guild.name}")
 
 
+async def deleteticketdirectories(guild):
+    dirr = f"tickets/{guild.id}"
+    if os.path.exists(dirr):
+        print(f"Deleting server ticket folders for {guild.name}")
+        os.remove(dirr)
+        print(f"Deleted")
+
+
 async def getticketdata(guild, tickettype, file):
     dirr = f"tickets/{guild.id}/{tickettype}/{file}.txt"
     if os.path.exists(dirr):

@@ -216,6 +216,10 @@ class semvticketcmd(commands.Cog):
         for guild in self.bot.guilds:
             await ticketdirectories(guild=guild, tickettype=tickettype, file="log")
 
+    @commands.Cog.listener()
+    async def on_guild_join(self, guild):
+        await ticketdirectories(guild=guild, tickettype=tickettype, file="log")
+
     @commands.has_permissions(manage_roles=True)
     @app_commands.command(name="semi-vanilla-support-ticket", description="Command used by admin to create the "
                                                                           "Semi-Vanilla support ticket message.")
