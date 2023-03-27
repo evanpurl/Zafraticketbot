@@ -5,8 +5,6 @@ import chat_exporter
 import discord
 from discord import ui
 
-from util.dbsetget import dbgetlogchannel
-
 
 def ticketembed():
     embed = discord.Embed(description=f"When you are finished, click the close ticket button below.",
@@ -70,9 +68,10 @@ class closemodal(ui.Modal, title='Ticket Closure Modal'):
 
 
 class autoclosemodal(ui.Modal, title='Ticket Closure Modal'):
-    def __init__(self, tickettype):
+    def __init__(self, tickettype, file):
         super().__init__()
         self.ticket = tickettype
+        self.file = file
 
     reason = ui.TextInput(label='PLEASE GIVE A REASON FOR CLOSING THIS TICKET.', style=discord.TextStyle.paragraph,
                           max_length=600)
@@ -80,9 +79,9 @@ class autoclosemodal(ui.Modal, title='Ticket Closure Modal'):
     async def on_submit(self, interaction: discord.Interaction):
         try:
             await interaction.response.send_message(content="Closing reason sent.")
-            lchanid = await dbgetlogchannel(self.ticket)
+            lchanid = await getticketdata(guild=interaction.guild, tickettype=self.ticket, file=self.file)
             logchannel = discord.utils.get(interaction.guild.channels,
-                                           id=lchanid[0])
+                                           id=lchanid)
             if logchannel:
                 transcript = await chat_exporter.export(
                     interaction.channel,
