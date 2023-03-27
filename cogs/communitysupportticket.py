@@ -5,7 +5,7 @@ import discord
 from discord import app_commands, ui
 from discord.ext import commands
 from util.ticketutils import ticketmessageembed, ticketembed, closemodal, autoclosemodal, closemessageembed, \
-    ticketdirectories, getticketdata
+    ticketdirectories, getticketdata, getticketcat
 
 timeout = 300  # seconds
 
@@ -26,7 +26,8 @@ class Ticketmodal(ui.Modal, title='Community Support Ticket'):
             interaction.guild.default_role: discord.PermissionOverwrite(read_messages=False),
             interaction.user: discord.PermissionOverwrite(read_messages=True),
             interaction.guild.me: discord.PermissionOverwrite(read_messages=True)}
-        ticketcat = discord.utils.get(interaction.guild.categories, name="𝙏𝙞𝙘𝙠𝙚𝙩𝙨")
+        cat = await getticketcat(guild=interaction.guild)
+        ticketcat = discord.utils.get(interaction.guild.categories, id=cat)
         if ticketcat:
             ticketchan = await interaction.guild.create_text_channel(
                 f"ticket-{interaction.user.name}-{tickettype}", category=ticketcat,
