@@ -16,7 +16,7 @@ class setcmd(commands.GroupCog, name="set"):
     @app_commands.checks.has_permissions(manage_channels=True)
     async def csupportlog(self, interaction: discord.Interaction, channel: discord.TextChannel):
         try:
-            await dbsetlogchannel("Community Support", channel.id)
+            await setticketdata(guild=interaction.guild, tickettype="communitysupport", file="log", data=channel.id)
             await interaction.response.send_message(f"Your Community Support log channel has been set to {channel.mention}.",
                                                     ephemeral=True)
         except Exception as e:
@@ -28,7 +28,7 @@ class setcmd(commands.GroupCog, name="set"):
     @app_commands.checks.has_permissions(manage_channels=True)
     async def rtsupportlog(self, interaction: discord.Interaction, channel: discord.TextChannel):
         try:
-            await dbsetlogchannel("Rusturned Support", channel.id)
+            await setticketdata(guild=interaction.guild, tickettype="rusturnedsupport", file="log", data=channel.id)
             await interaction.response.send_message(
                 f"Your Rusturned Support log channel has been set to {channel.mention}.",
                 ephemeral=True)
@@ -41,7 +41,7 @@ class setcmd(commands.GroupCog, name="set"):
     @app_commands.checks.has_permissions(manage_channels=True)
     async def rpsupportlog(self, interaction: discord.Interaction, channel: discord.TextChannel):
         try:
-            await dbsetlogchannel("RP Support", channel.id)
+            await setticketdata(guild=interaction.guild, tickettype="roleplaysupport", file="log", data=channel.id)
             await interaction.response.send_message(
                 f"Your Roleplay Support log channel has been set to {channel.mention}.",
                 ephemeral=True)
@@ -54,7 +54,7 @@ class setcmd(commands.GroupCog, name="set"):
     @app_commands.checks.has_permissions(manage_channels=True)
     async def semivanillasupportlog(self, interaction: discord.Interaction, channel: discord.TextChannel):
         try:
-            await dbsetlogchannel("Semi-Vanilla Support", channel.id)
+            await setticketdata(guild=interaction.guild, tickettype="semivanillasupport", file="log", data=channel.id)
             await interaction.response.send_message(
                 f"Your Semi-Vanilla Support log channel has been set to {channel.mention}.",
                 ephemeral=True)
@@ -67,7 +67,7 @@ class setcmd(commands.GroupCog, name="set"):
     @app_commands.checks.has_permissions(manage_channels=True)
     async def semiroleplaysupportlog(self, interaction: discord.Interaction, channel: discord.TextChannel):
         try:
-            await dbsetlogchannel("Semi-Roleplay Support", channel.id)
+            await setticketdata(guild=interaction.guild, tickettype="semiroleplaysupport", file="log", data=channel.id)
             await interaction.response.send_message(
                 f"Your Semi-Roleplay Support log channel has been set to {channel.mention}.",
                 ephemeral=True)
@@ -80,7 +80,7 @@ class setcmd(commands.GroupCog, name="set"):
     @app_commands.checks.has_permissions(manage_channels=True)
     async def playerreportlog(self, interaction: discord.Interaction, channel: discord.TextChannel):
         try:
-            await dbsetlogchannel("Player Report", channel.id)
+            await setticketdata(guild=interaction.guild, tickettype="playerreport", file="log", data=channel.id)
             await interaction.response.send_message(
                 f"Your Player Report log channel has been set to {channel.mention}.",
                 ephemeral=True)
@@ -93,7 +93,7 @@ class setcmd(commands.GroupCog, name="set"):
     @app_commands.checks.has_permissions(manage_channels=True)
     async def banappeallog(self, interaction: discord.Interaction, channel: discord.TextChannel):
         try:
-            await dbsetlogchannel("Ban Appeal", channel.id)
+            await setticketdata(guild=interaction.guild, tickettype="banappeal", file="log", data=channel.id)
             await interaction.response.send_message(
                 f"Your Ban Appeal log channel has been set to {channel.mention}.",
                 ephemeral=True)

@@ -26,28 +26,28 @@ class resetcmd(commands.Cog):
     ])
     async def reset(self, interaction: discord.Interaction, config: app_commands.Choice[int]) -> None:
         if config.value == 1:
-            await dbsetlogchannel("Community Support", 0)
+            await setticketdata(guild=interaction.guild, tickettype="communitysupport", file="log", data=0)
             await interaction.response.send_message(f"Community Support Log channel has been reset.", ephemeral=True)
         elif config.value == 2:
-            await dbsetlogchannel("RP Support", 0)
+            await setticketdata(guild=interaction.guild, tickettype="roleplaysupport", file="log", data=0)
             await interaction.response.send_message(f"RP Support Log channel has been reset.", ephemeral=True)
         elif config.value == 3:
-            await dbsetlogchannel("Semi-Vanilla Support", 0)
+            await setticketdata(guild=interaction.guild, tickettype="semivanillasupport", file="log", data=0)
             await interaction.response.send_message(f"Semi-Vanilla Support Log channel has been reset.", ephemeral=True)
         elif config.value == 4:
-            await dbsetlogchannel("Semi-Roleplay Support", 0)
+            await setticketdata(guild=interaction.guild, tickettype="semiroleplaysupport", file="log", data=0)
             await interaction.response.send_message(f"Semi-Roleplay Support Log channel has been reset.", ephemeral=True)
         elif config.value == 5:
-            await dbsetlogchannel("Player Report", 0)
+            await setticketdata(guild=interaction.guild, tickettype="playerreport", file="log", data=0)
             await interaction.response.send_message(f"Player Report Log channel has been reset.", ephemeral=True)
         elif config.value == 6:
-            await dbsetlogchannel("Ban Appeal", 0)
+            await setticketdata(guild=interaction.guild, tickettype="banappeal", file="log", data=0)
             await interaction.response.send_message(f"Ban Appeal Log channel has been reset.", ephemeral=True)
         elif config.value == 7:
             await setticketdata(guild=interaction.guild, tickettype="webstoresupport", file="log", data=0)
             await interaction.response.send_message(f"Webstore Support Log channel has been reset.", ephemeral=True)
         elif config.value == 8:
-            await dbsetlogchannel("Rusturned Support", 0)
+            await setticketdata(guild=interaction.guild, tickettype="rusturnedsupport", file="log", data=0)
             await interaction.response.send_message(f"Rusturned Support Log channel has been reset.", ephemeral=True)
 
     @reset.error

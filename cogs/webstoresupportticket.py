@@ -80,7 +80,7 @@ class Ticketmodal(ui.Modal, title='Webstore Support Ticket'):
 
         else:
             ticketchan = await interaction.guild.create_text_channel(
-                f"ticket-{interaction.user.name}-webstoresupport", overwrites=overwrites)
+                f"ticket-{interaction.user.name}-{tickettype}", overwrites=overwrites)
 
             await interaction.response.send_message(content=f"Ticket created in {ticketchan.mention}!",
                                                     ephemeral=True)
@@ -159,7 +159,6 @@ class ticketbuttonpanel(discord.ui.View):
         except Exception as e:
             print(e)
 
-    @commands.has_permissions(manage_channels=True)
     @discord.ui.button(label="Auto-Close Ticket", emoji="⏲️", style=discord.ButtonStyle.gray,
                        custom_id=f"{tickettype}:autoclose", disabled=True)
     async def auto_close_button(self, interaction: discord.Interaction, button: discord.ui.Button):

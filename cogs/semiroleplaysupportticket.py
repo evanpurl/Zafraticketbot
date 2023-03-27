@@ -4,13 +4,15 @@ import chat_exporter
 import discord
 from discord import app_commands, ui
 from discord.ext import commands
-from util.dbsetget import dbgetlogchannel
-from util.ticketutils import ticketembed, closemodal, autoclosemodal, ticketmessageembed, closemessageembed
+from util.ticketutils import ticketembed, closemodal, autoclosemodal, ticketmessageembed, closemessageembed, \
+    ticketdirectories, getticketdata
 
 timeout = 300  # seconds
 
 # Needs "manage role" perms
 # ticket-username-semiroleplaysupport
+
+tickettype = "semiroleplaysupport"
 
 rolelist = ['SRP Junior Moderator', 'SRP Moderator', 'SRP Senior Moderator', 'SRP Administrator', 'SRP '
                                                                                                   'Staff '
@@ -31,7 +33,7 @@ class Ticketmodal(ui.Modal, title='Semi-Roleplay Support Ticket'):
         ticketcat = discord.utils.get(interaction.guild.categories, name="𝙏𝙞𝙘𝙠𝙚𝙩𝙨")
         if ticketcat:
             ticketchan = await interaction.guild.create_text_channel(
-                f"ticket-{interaction.user.name}-semiroleplaysupport", category=ticketcat,
+                f"ticket-{interaction.user.name}-{tickettype}", category=ticketcat,
                 overwrites=overwrites)
 
             await interaction.response.send_message(content=f"Ticket created in {ticketchan.mention}!",
@@ -56,9 +58,9 @@ class Ticketmodal(ui.Modal, title='Semi-Roleplay Support Ticket'):
             try:
                 msg = await interaction.client.wait_for('message', check=check, timeout=timeout)
             except asyncio.TimeoutError:
-                lchanid = await dbgetlogchannel("Semi-Roleplay Support")
+                lchanid = await getticketdata(guild=interaction.guild, tickettype=tickettype, file="log")
                 logchannel = discord.utils.get(interaction.guild.channels,
-                                               id=lchanid[0])
+                                               id=lchanid)
                 if logchannel:
                     transcript = await chat_exporter.export(
                         ticketchan,
@@ -80,7 +82,7 @@ class Ticketmodal(ui.Modal, title='Semi-Roleplay Support Ticket'):
 
         else:
             ticketchan = await interaction.guild.create_text_channel(
-                f"ticket-{interaction.user.name}-semiroleplaysupport", overwrites=overwrites)
+                f"ticket-{interaction.user.name}-{tickettype}", overwrites=overwrites)
 
             await interaction.response.send_message(content=f"Ticket created in {ticketchan.mention}!",
                                                     ephemeral=True)
@@ -104,9 +106,9 @@ class Ticketmodal(ui.Modal, title='Semi-Roleplay Support Ticket'):
             try:
                 msg = await interaction.client.wait_for('message', check=check, timeout=timeout)
             except asyncio.TimeoutError:
-                lchanid = await dbgetlogchannel("Semi-Roleplay Support")
+                lchanid = await getticketdata(guild=interaction.guild, tickettype=tickettype, file="log")
                 logchannel = discord.utils.get(interaction.guild.channels,
-                                               id=lchanid[0])
+                                               id=lchanid)
                 if logchannel:
                     transcript = await chat_exporter.export(
                         ticketchan,
@@ -133,16 +135,16 @@ class ticketbuttonpanel(discord.ui.View):
         super().__init__(timeout=None)
 
     @discord.ui.button(label="Close Ticket", emoji="🗑️", style=discord.ButtonStyle.red,
-                       custom_id="semiroleplaysupport:close", disabled=True)
+                       custom_id=f"{tickettype}:close", disabled=True)
     async def close_button(self, interaction: discord.Interaction, button: discord.ui.Button):
         try:
             if any(role.name in rolelist for role in interaction.user.roles):
-                await interaction.response.send_modal(closemodal(tickettype="Semi-Roleplay Support"))
+                await interaction.response.send_modal(closemodal(tickettype=tickettype, file="log"))
         except Exception as e:
             print(e)
 
     @discord.ui.button(label="Claim Ticket", emoji="✅", style=discord.ButtonStyle.green,
-                       custom_id="semiroleplaysupport:claim")
+                       custom_id=f"{tickettype}:claim")
     async def claim_button(self, interaction: discord.Interaction, button: discord.ui.Button):
         try:
             if any(role.name in rolelist for role in interaction.user.roles):
@@ -152,18 +154,20 @@ class ticketbuttonpanel(discord.ui.View):
                 await interaction.response.send_message(
                     content=f"Ticket has been claimed by {interaction.user.mention}")
                 await interaction.message.edit(view=self)
+                overwrite = discord.PermissionOverwrite()
+                overwrite.send_messages = True
+                await interaction.channel.set_permissions(interaction.user, overwrite=overwrite)
             else:
                 await interaction.response.send_message(content=f"You're not authorized to do that", ephemeral=True)
         except Exception as e:
             print(e)
 
-    @commands.has_permissions(manage_channels=True)
     @discord.ui.button(label="Auto-Close Ticket", emoji="⏲️", style=discord.ButtonStyle.gray,
-                       custom_id="semiroleplaysupport:autoclose", disabled=True)
+                       custom_id=f"{tickettype}:autoclose", disabled=True)
     async def auto_close_button(self, interaction: discord.Interaction, button: discord.ui.Button):
         try:
             if any(role.name in rolelist for role in interaction.user.roles):
-                await interaction.response.send_modal(autoclosemodal(tickettype="Semi-Roleplay Support"))
+                await interaction.response.send_modal(autoclosemodal(tickettype=tickettype, file="log"))
                 await interaction.response.send_message(content="Timer started.", ephemeral=True)
 
                 def check(m: discord.Message):  # m = discord.Message.
@@ -187,11 +191,11 @@ class ticketbutton(discord.ui.View):
         super().__init__(timeout=None)
 
     @discord.ui.button(label="Create Ticket", emoji="📨", style=discord.ButtonStyle.blurple,
-                       custom_id="semiroleplaysupportbutton")
+                       custom_id=f"{tickettype}button")
     async def gray_button(self, interaction: discord.Interaction, button: discord.ui.Button):
         try:
             existticket = discord.utils.get(interaction.guild.channels,
-                                            name=f"ticket-{interaction.user.name.lower()}-semiroleplaysupport")
+                                            name=f"ticket-{interaction.user.name.lower()}-{tickettype}")
             if existticket:
                 await interaction.response.send_message(
                     content=f"You already have an existing ticket you silly goose. {existticket.mention}",
@@ -205,6 +209,12 @@ class ticketbutton(discord.ui.View):
 class semirpticketcmd(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+
+    @commands.Cog.listener()
+    async def on_ready(self):
+        await self.bot.wait_until_ready()
+        for guild in self.bot.guilds:
+            await ticketdirectories(guild=guild, tickettype=tickettype, file="log")
 
     @commands.has_permissions(manage_roles=True)
     @app_commands.command(name="semi-roleplay-support-ticket", description="Command used by admin to create the "

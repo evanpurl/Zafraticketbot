@@ -4,9 +4,8 @@ import chat_exporter
 import discord
 from discord import app_commands, ui
 from discord.ext import commands
-from util.dbsetget import dbgetlogchannel
 from util.ticketutils import ticketmessageembed, ticketembed, closemodal, autoclosemodal, closemessageembed, \
-    ticketdirectories
+    ticketdirectories, getticketdata
 
 timeout = 300  # seconds
 
@@ -55,9 +54,9 @@ class Ticketmodal(ui.Modal, title='Community Support Ticket'):
             try:
                 msg = await interaction.client.wait_for('message', check=check, timeout=timeout)
             except asyncio.TimeoutError:
-                lchanid = await dbgetlogchannel("Community Support")
+                lchanid = await getticketdata(guild=interaction.guild, tickettype=tickettype, file="log")
                 logchannel = discord.utils.get(interaction.guild.channels,
-                                               id=lchanid[0])
+                                               id=lchanid)
                 if logchannel:
                     transcript = await chat_exporter.export(
                         ticketchan,
@@ -103,9 +102,9 @@ class Ticketmodal(ui.Modal, title='Community Support Ticket'):
             try:
                 msg = await interaction.client.wait_for('message', check=check, timeout=timeout)
             except asyncio.TimeoutError:
-                lchanid = await dbgetlogchannel("Community Support")
+                lchanid = await getticketdata(guild=interaction.guild, tickettype=tickettype, file="log")
                 logchannel = discord.utils.get(interaction.guild.channels,
-                                               id=lchanid[0])
+                                               id=lchanid)
                 if logchannel:
                     transcript = await chat_exporter.export(
                         ticketchan,
@@ -135,7 +134,7 @@ class ticketbuttonpanel(discord.ui.View):
     async def close_button(self, interaction: discord.Interaction, button: discord.ui.Button):
         try:
             if any(role.name in rolelist for role in interaction.user.roles):
-                await interaction.response.send_modal(closemodal(tickettype=tickettype))
+                await interaction.response.send_modal(closemodal(tickettype=tickettype, file="log"))
         except Exception as e:
             print(e)
 
@@ -143,7 +142,6 @@ class ticketbuttonpanel(discord.ui.View):
                        custom_id=f"{tickettype}:claim")
     async def claim_button(self, interaction: discord.Interaction, button: discord.ui.Button):
         try:
-
             if any(role.name in rolelist for role in interaction.user.roles):
                 button.disabled = True
                 self.close_button.disabled = False
@@ -159,13 +157,12 @@ class ticketbuttonpanel(discord.ui.View):
         except Exception as e:
             print(e)
 
-    @commands.has_permissions(manage_channels=True)
     @discord.ui.button(label="Auto-Close Ticket", emoji="⏲️", style=discord.ButtonStyle.gray,
                        custom_id=f"{tickettype}:autoclose", disabled=True)
     async def auto_close_button(self, interaction: discord.Interaction, button: discord.ui.Button):
         try:
             if any(role.name in rolelist for role in interaction.user.roles):
-                await interaction.response.send_modal(autoclosemodal(tickettype=tickettype))
+                await interaction.response.send_modal(autoclosemodal(tickettype=tickettype, file="log"))
                 await interaction.response.send_message(content="Timer started.", ephemeral=True)
 
                 def check(m: discord.Message):  # m = discord.Message.
@@ -176,9 +173,9 @@ class ticketbuttonpanel(discord.ui.View):
                         msg = await interaction.client.wait_for('message', check=check, timeout=timeout)
                 except asyncio.TimeoutError:
                     await interaction.channel.delete()
-
             else:
-                await interaction.response.send_message(content="You don't have permission to do that.", ephemeral=True)
+                await interaction.response.send_message(content="You don't have permission to do that.",
+                                                        ephemeral=True)
         except Exception as e:
             print(e)
 
