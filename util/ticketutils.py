@@ -140,3 +140,25 @@ async def setticketdata(guild, tickettype, file, data):
         return 1
     else:
         return 0
+
+
+async def setticketcat(guild, cat):
+    dirr = f"config/{guild.id}/ticketcategory.txt"
+    if os.path.exists(dirr):
+        with open(dirr, "w") as f:
+            f.write(str(cat))
+        return 1
+    else:
+        os.makedirs(os.path.dirname(dirr))
+        with open(dirr, "w") as f:
+            f.write(str(cat))
+
+
+async def getticketcat(guild):
+    dirr = f"config/{guild.id}/ticketcategory.txt"
+    if os.path.exists(dirr):
+        with open(dirr, "r") as f:
+            data = f.readline()
+        return int(data)
+    else:
+        return 0

@@ -3,7 +3,7 @@ from discord import app_commands
 from discord.ext import commands
 
 from util.dbsetget import dbsetlogchannel
-from util.ticketutils import setticketdata
+from util.ticketutils import setticketdata, setticketcat
 
 
 class setcmd(commands.GroupCog, name="set"):
@@ -114,11 +114,25 @@ class setcmd(commands.GroupCog, name="set"):
             print(e)
             await interaction.response.send_message(content=f"""Something went wrong.""", ephemeral=True)
 
+    @app_commands.command(name="ticket-category",
+                          description="Admin command to set the ticket category.")
+    @app_commands.checks.has_permissions(manage_channels=True)
+    async def ticketcategory(self, interaction: discord.Interaction, category: discord.CategoryChannel):
+        try:
+            await setticketcat(guild=interaction.guild, cat=category.id)
+            await interaction.response.send_message(
+                f"Your ticket category is set to {category.name}",
+                ephemeral=True)
+        except Exception as e:
+            print(e)
+            await interaction.response.send_message(content=f"""Something went wrong.""", ephemeral=True)
+
     @csupportlog.error
     @rpsupportlog.error
     @semivanillasupportlog.error
     @playerreportlog.error
     @banappeallog.error
+    @ticketcategory.error
     async def onerror(self, interaction: discord.Interaction, error: app_commands.AppCommandError):
         await interaction.response.send_message(content=error,
                                                 ephemeral=True)
