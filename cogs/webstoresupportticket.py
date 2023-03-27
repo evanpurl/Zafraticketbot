@@ -5,15 +5,14 @@ import discord
 from discord import app_commands, ui
 from discord.ext import commands
 from util.dbsetget import dbgetlogchannel
-from util.ticketutils import ticketmessageembed, autoclosemodal, closemodal, ticketembed, closemessageembed, ticketdirectories
+from util.ticketutils import ticketmessageembed, autoclosemodal, closemodal, ticketembed, closemessageembed, \
+    ticketdirectories
 
 timeout = 300  # seconds
-
 
 # Needs "manage role" perms
 # ticket-username-webstoresupport
 tickettype = "webstoresupport"
-
 
 rolelist = ['Community Moderator', 'Support Team']
 
@@ -210,19 +209,20 @@ class websticketcmd(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
+    @commands.has_permissions(manage_roles=True)
+    @app_commands.command(name=f"{tickettype}-ticket", description="Command used by admin to create the "
+                                                                   "Webstore support ticket message.")
+    async def csticket(self, interaction: discord.Interaction) -> None:
+        try:
+            await interaction.response.send_message(embed=ticketmessageembed(self.bot, tickettype="Webstore Support"),
+                                                    view=ticketbutton())
+        except Exception as e:
+            print(e)
+
     async def cog_load(self):
         try:
             for guild in self.bot.guilds:
                 await ticketdirectories(guild=guild, tickettype=tickettype, file="log")
-        except Exception as e:
-            print(e)
-
-    @commands.has_permissions(manage_roles=True)
-    @app_commands.command(name=f"{tickettype}-ticket", description="Command used by admin to create the "
-                                                                      "Webstore support ticket message.")
-    async def csticket(self, interaction: discord.Interaction) -> None:
-        try:
-            await interaction.response.send_message(embed=ticketmessageembed(self.bot, tickettype="Webstore Support"), view=ticketbutton())
         except Exception as e:
             print(e)
 
