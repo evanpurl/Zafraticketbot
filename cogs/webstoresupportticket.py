@@ -4,9 +4,8 @@ import chat_exporter
 import discord
 from discord import app_commands, ui
 from discord.ext import commands
-from util.dbsetget import dbgetlogchannel
 from util.ticketutils import ticketmessageembed, autoclosemodal, closemodal, ticketembed, closemessageembed, \
-    ticketdirectories
+    ticketdirectories, getticketdata
 
 timeout = 300  # seconds
 
@@ -57,9 +56,9 @@ class Ticketmodal(ui.Modal, title='Webstore Support Ticket'):
             try:
                 msg = await interaction.client.wait_for('message', check=check, timeout=timeout)
             except asyncio.TimeoutError:
-                lchanid = await dbgetlogchannel("Webstore Support")
+                lchanid = await getticketdata(guild=interaction.guild, tickettype=tickettype, file="log")
                 logchannel = discord.utils.get(interaction.guild.channels,
-                                               id=lchanid[0])
+                                               id=lchanid)
                 if logchannel:
                     transcript = await chat_exporter.export(
                         ticketchan,
@@ -105,9 +104,9 @@ class Ticketmodal(ui.Modal, title='Webstore Support Ticket'):
             try:
                 msg = await interaction.client.wait_for('message', check=check, timeout=timeout)
             except asyncio.TimeoutError:
-                lchanid = await dbgetlogchannel("Webstore Support")
+                lchanid = await getticketdata(guild=interaction.guild, tickettype=tickettype, file="log")
                 logchannel = discord.utils.get(interaction.guild.channels,
-                                               id=lchanid[0])
+                                               id=lchanid)
                 if logchannel:
                     transcript = await chat_exporter.export(
                         ticketchan,
@@ -137,7 +136,7 @@ class ticketbuttonpanel(discord.ui.View):
     async def close_button(self, interaction: discord.Interaction, button: discord.ui.Button):
         try:
             if any(role.name in rolelist for role in interaction.user.roles):
-                await interaction.response.send_modal(closemodal(tickettype="webstoresupport"))
+                await interaction.response.send_modal(closemodal(tickettype=tickettype))
         except Exception as e:
             print(e)
 
@@ -166,7 +165,7 @@ class ticketbuttonpanel(discord.ui.View):
     async def auto_close_button(self, interaction: discord.Interaction, button: discord.ui.Button):
         try:
             if any(role.name in rolelist for role in interaction.user.roles):
-                await interaction.response.send_modal(autoclosemodal(tickettype="Webstore Support"))
+                await interaction.response.send_modal(autoclosemodal(tickettype=tickettype))
                 await interaction.response.send_message(content="Timer started.", ephemeral=True)
 
                 def check(m: discord.Message):  # m = discord.Message.

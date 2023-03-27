@@ -135,7 +135,7 @@ class ticketbuttonpanel(discord.ui.View):
     async def close_button(self, interaction: discord.Interaction, button: discord.ui.Button):
         try:
             if any(role.name in rolelist for role in interaction.user.roles):
-                await interaction.response.send_modal(closemodal(tickettype="Community Support"))
+                await interaction.response.send_modal(closemodal(tickettype=tickettype))
         except Exception as e:
             print(e)
 
@@ -165,7 +165,7 @@ class ticketbuttonpanel(discord.ui.View):
     async def auto_close_button(self, interaction: discord.Interaction, button: discord.ui.Button):
         try:
             if any(role.name in rolelist for role in interaction.user.roles):
-                await interaction.response.send_modal(autoclosemodal(tickettype="Community Support"))
+                await interaction.response.send_modal(autoclosemodal(tickettype=tickettype))
                 await interaction.response.send_message(content="Timer started.", ephemeral=True)
 
                 def check(m: discord.Message):  # m = discord.Message.
@@ -193,7 +193,7 @@ class ticketbutton(discord.ui.View):
     async def gray_button(self, interaction: discord.Interaction, button: discord.ui.Button):
         try:
             existticket = discord.utils.get(interaction.guild.channels,
-                                            name=f"ticket-{interaction.user.name.lower()}-communitysupport")
+                                            name=f"ticket-{interaction.user.name.lower()}-{tickettype}")
             if existticket:
                 await interaction.response.send_message(
                     content=f"You already have an existing ticket you silly goose. {existticket.mention}",
