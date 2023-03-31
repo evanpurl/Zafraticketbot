@@ -14,7 +14,7 @@ timeout = 300  # seconds
 
 tickettype = "communitysupport"
 
-rolelist = ['Community Moderator', 'Support Team']
+rolelist = ['Support Team']
 
 
 class Ticketmodal(ui.Modal, title='Community Support Ticket'):

@@ -14,9 +14,7 @@ timeout = 300  # seconds
 
 tickettype = "semiroleplaysupport"
 
-rolelist = ['SRP Junior Moderator', 'SRP Moderator', 'SRP Senior Moderator', 'SRP Administrator', 'SRP '
-                                                                                                  'Staff '
-                                                                                                  'Manager', 'Support Team']
+rolelist = ['Support Team']
 
 
 class Ticketmodal(ui.Modal, title='Semi-Roleplay Support Ticket'):
